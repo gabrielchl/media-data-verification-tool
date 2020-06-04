@@ -85,8 +85,11 @@ function post_contribution(status) {
     $.post({
         url: '../api/contribute',
         data: JSON.stringify({
-            claim_id: current_claim,
-            status: status,
+            type: 'P180',
+            data: {
+                claim_id: current_claim,
+                status: status
+            },
             csrf : csrf
         }),
         contentType : 'application/json'
@@ -106,13 +109,13 @@ function show_toast(status, message) {
 }
 
 $('#true-btn').click(function() {
-    post_contribution(true);
+    post_contribution('true');
 });
 
 $('#false-btn').click(function() {
-    post_contribution(false);
+    post_contribution('false');
 });
 
 $('#skip-btn').click(function() {
-    show_toast('warning', 'This function is not ready yet.');
+    post_contribution('skip');
 });
