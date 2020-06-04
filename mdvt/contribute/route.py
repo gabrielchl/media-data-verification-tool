@@ -53,6 +53,22 @@ def api_get_media():
 
 @contribute_bp.route('/api/contribute', methods=['post'])
 def api_contribute():
+    """
+    Handles contribution requests.
+
+    Expected request format, in json:
+    {
+        type: <type of the contribution (e.g. P180)>,
+        data: <data, format specificed below>
+        csrf: <csrf value>
+    }
+
+    Data format for depicts:
+    {
+        claim_id: <claim id>,
+        status: <true / false / skip>
+    }
+    """
     if not is_logged_in():
         return jsonify({
             'status': 'fail',
