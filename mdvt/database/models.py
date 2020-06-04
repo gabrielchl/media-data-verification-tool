@@ -27,8 +27,8 @@ class Contribution(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     page_id = db.Column(db.Integer, nullable=False)
-    data_type = db.Column(db.String(20), nullable=False)
-    data = db.Column(db.String(20), nullable=False)
+    question = db.Column(db.String(255), nullable=False)
+    answer = db.Column(db.String(255), nullable=False)
     undo = db.Column(db.Boolean, nullable=False, default=False)
     triggered_change = db.Column(db.Boolean, nullable=False, default=False)
     time_created = db.Column(db.DateTime, nullable=False,
