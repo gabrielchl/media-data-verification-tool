@@ -2,6 +2,8 @@ from flask import (Blueprint, jsonify, render_template, redirect, request,
                    session, url_for)
 
 from mdvt.contribute.util import get_contrib_request
+from mdvt import db
+from mdvt.database.models import Contribution
 from mdvt.database.util import db_set_or_update_user_setting
 from mdvt.main.util import is_logged_in
 
@@ -92,6 +94,17 @@ def api_contribute():
                 'title': 'CSRF token not recognized'
             }
         }), 401
+
+    contrib_request = request.get_json()
+    print(contrib_request)
+
+    db.session.add(Contribution(user_id=session['user_id'],
+                                page_id=0,
+                                question='{{type: {}, claim_id: {}}}'.format(
+                                    contrib_request['type'],
+                                    contrib_request['data']['claim_id']),
+                                answer=contrib_request['data']['status']))
+    db.session.commit()
 
     session['csrf'] = None
     return jsonify({

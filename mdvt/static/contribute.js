@@ -97,7 +97,7 @@ function post_contribution(status) {
         console.log(response);
         show_toast('success', 'Theoretically your contribution is recorded.');
     }).fail(function(response) {
-        show_toast('warning', 'Failed to post contribution, please try again.');
+        show_toast('warning', 'Failed to post contribution, please try again.' + response.responseText);
     });
 }
 
