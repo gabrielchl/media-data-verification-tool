@@ -5,6 +5,7 @@ import secrets
 
 from mdvt import db
 from mdvt.database.models import Question
+from mdvt.database.util import db_get_existing_entry
 
 
 def api_all_images(continue_key=None):
@@ -107,81 +108,6 @@ def api_get_id(title):
     return list(response['query']['pages'].keys())[0]
 
 
-def get_contrib_request(filter_type, filter_value, continue_key=None):
-    if filter_type == 'recent':
-        latest_files, continue_key = api_all_images(continue_key)
-
-        for file in latest_files:
-            file_depicts = get_file_depicts(file['title'])
-            if file_depicts is not None:
-                (depict_id, depict_label,
-                 depict_description, claim_id) = file_depicts
-            else:
-                continue
-
-            contribute_request = {
-                'media_page': file['descriptionurl'],
-                'media_page_id': api_get_id('File:{}', file['title']),
-                'media_title': file['title'],
-                'depict_id': depict_id,
-                'depict_label': depict_label,
-                'depict_description': depict_description,
-                'claim_id': claim_id,
-                'csrf': gen_csrf()
-            }
-            return contribute_request
-    elif filter_type == 'category':
-        pages, continue_key = api_category_members(filter_value, continue_key)
-
-        for page in pages:
-            if page['ns'] != 6:
-                continue
-            file_depicts = get_file_depicts(page['title'])
-            if file_depicts is not None:
-                (depict_id, depict_label,
-                 depict_description, claim_id) = file_depicts
-            else:
-                continue
-
-            contribute_request = {
-                'media_page': page['fullurl'],
-                'media_page_id': page['pageid'],
-                'media_title': page['title'],
-                'depict_id': depict_id,
-                'depict_label': depict_label,
-                'depict_description': depict_description,
-                'claim_id': claim_id,
-                'csrf': gen_csrf()
-            }
-            return contribute_request
-    elif filter_type == 'tag':
-        changes, continue_key = api_tagged_changes(filter_value, continue_key)
-
-        for change in changes:
-            if change['ns'] != 6:
-                continue
-            file_depicts = get_file_depicts(change['title'])
-            if file_depicts is not None:
-                (depict_id, depict_label,
-                 depict_description, claim_id) = file_depicts
-            else:
-                continue
-
-            contribute_request = {
-                'media_page': api_info_url(str(change['pageid'])),
-                'media_page_id': change['pageid'],
-                'media_title': change['title'],
-                'depict_id': depict_id,
-                'depict_label': depict_label,
-                'depict_description': depict_description,
-                'claim_id': claim_id,
-                'csrf': gen_csrf()
-            }
-            return contribute_request
-
-    return get_contrib_request(filter_type, filter_value, continue_key)
-
-
 def gen_csrf():
     csrf = secrets.token_hex(16)
     session['csrf'] = csrf
@@ -190,6 +116,53 @@ def gen_csrf():
 
 # TODO: solve 414 or use id instead of titles
 def get_questions(filter_type, filter_value, continue_key=None):
+    existing_question = db_get_existing_entry(Question,
+                                              filter_type=filter_type,
+                                              filter_value=filter_value)
+    if existing_question is not None:
+        page = requests.get(
+            'https://commons.wikimedia.org/w/api.php',
+            params={
+                'action': 'query',
+                'format': 'json',
+                'pageids': existing_question.page_id,
+            }
+        ).json()
+
+        claim_value = requests.get(
+            'https://commons.wikimedia.org/w/api.php',
+            params={
+                'action': 'wbgetclaims',
+                'format': 'json',
+                'claim': existing_question.claim_id,
+            }
+        ).json()['claims']['P180'][0]['mainsnak']['datavalue']['value']['id']
+
+        claim = requests.get(
+            'https://www.wikidata.org/w/api.php',
+            params={
+                'action': 'wbgetentities',
+                'format': 'json',
+                'ids': claim_value,
+                'languages': 'en'
+            }
+        ).json()['entities'][claim_value]
+        claim_label = claim['labels']['en']['value']
+        claim_description = claim['descriptions']['en']['value']
+
+        page_id = existing_question.page_id
+
+        question = {
+            'media_page': api_info_url(str(page_id)),
+            'media_page_id': page_id,
+            'media_title': page['query']['pages'][str(page_id)]['title'],
+            'depict_id': claim_value,
+            'depict_label': claim_label,
+            'depict_description': claim_description,
+            'claim_id': existing_question.claim_id,
+            'csrf': gen_csrf()
+        }
+        return question
     got_questions = False
     if filter_type == 'recent':
         latest_files, continue_key = api_all_images(continue_key)
@@ -220,13 +193,17 @@ def get_questions(filter_type, filter_value, continue_key=None):
 
                 if type(statements) is dict:
                     for depict in statements['P180']:
-                        db.session.add(Question(page_id=entity['pageid'],
-                                                type='P180',
-                                                claim_id=depict['id'],
-                                                filter_type='filter_type',
-                                                filter_value='filter_value'))
-                        db.session.commit()
-                        got_questions = True
+                        existing_claim = (
+                            db_get_existing_entry(Question,
+                                                  claim_id=depict['id']))
+                        if existing_claim is None:
+                            db.session.add(Question(page_id=entity['pageid'],
+                                                    type='P180',
+                                                    claim_id=depict['id'],
+                                                    filter_type=filter_type,
+                                                    filter_value=filter_value))
+                            db.session.commit()
+                            got_questions = True
             except KeyError:
                 continue
 
