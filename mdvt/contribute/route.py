@@ -55,8 +55,7 @@ def api_get_media():
 
 @contribute_bp.route('/api/contribute', methods=['post'])
 def api_contribute():
-    """
-    Handles contribution requests.
+    """Handles contribution requests.
 
     Expected request format, in json:
     {
