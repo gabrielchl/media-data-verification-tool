@@ -3,6 +3,9 @@ from flask import session
 import requests
 import secrets
 
+from mdvt import db
+from mdvt.database.models import Question
+
 
 def api_all_images(continue_key=None):
     params = {
@@ -11,7 +14,7 @@ def api_all_images(continue_key=None):
         'list': 'allimages',
         'aisort': 'timestamp',
         'aidir': 'descending',
-        'ailimit': 100
+        'ailimit': 50
     }
 
     if continue_key is not None:
@@ -89,6 +92,21 @@ def api_info_url(pageid):
     return response['query']['pages'][pageid]['fullurl']
 
 
+def api_get_id(title):
+    params = {
+        'action': 'query',
+        'format': 'json',
+        'titles': title
+    }
+
+    response = requests.get(
+        'https://commons.wikimedia.org/w/api.php',
+        params=params
+    ).json()
+
+    return list(response['query']['pages'].keys())[0]
+
+
 def get_contrib_request(filter_type, filter_value, continue_key=None):
     if filter_type == 'recent':
         latest_files, continue_key = api_all_images(continue_key)
@@ -103,6 +121,7 @@ def get_contrib_request(filter_type, filter_value, continue_key=None):
 
             contribute_request = {
                 'media_page': file['descriptionurl'],
+                'media_page_id': api_get_id('File:{}', file['title']),
                 'media_title': file['title'],
                 'depict_id': depict_id,
                 'depict_label': depict_label,
@@ -167,6 +186,54 @@ def gen_csrf():
     csrf = secrets.token_hex(16)
     session['csrf'] = csrf
     return csrf
+
+
+# TODO: solve 414 or use id instead of titles
+def get_questions(filter_type, filter_value, continue_key=None):
+    got_questions = False
+    if filter_type == 'recent':
+        latest_files, continue_key = api_all_images(continue_key)
+        file_titles = {file['title'] for file in latest_files}
+    elif filter_type == 'category':
+        pages, continue_key = api_category_members(filter_value, continue_key)
+        file_titles = {page['title'] for page in pages}
+    elif filter_type == 'tag':
+        changes, continue_key = api_tagged_changes(filter_value, continue_key)
+        file_titles = {change['title'] for change in changes}
+
+    statements = requests.get(
+        'https://commons.wikimedia.org/w/api.php',
+        params={
+            'action': 'wbgetentities',
+            'format': 'json',
+            'sites': 'commonswiki',
+            'titles': '|'.join(file_titles)
+        }
+    ).json()
+
+    if 'entities' in statements:
+        entities = list(statements['entities'].values())
+
+        for entity in entities:
+            try:
+                statements = entity['statements']
+
+                if type(statements) is dict:
+                    for depict in statements['P180']:
+                        db.session.add(Question(page_id=entity['pageid'],
+                                                type='P180',
+                                                claim_id=depict['id'],
+                                                filter_type='filter_type',
+                                                filter_value='filter_value'))
+                        db.session.commit()
+                        got_questions = True
+            except KeyError:
+                continue
+
+    if got_questions:
+        return
+    else:
+        get_questions(filter_type, filter_value, continue_key)
 
 
 def get_file_depicts(file_name):

@@ -1,7 +1,7 @@
 from flask import (Blueprint, jsonify, render_template, redirect, request,
                    session, url_for)
 
-from mdvt.contribute.util import get_contrib_request
+from mdvt.contribute.util import get_contrib_request, get_questions
 from mdvt import db
 from mdvt.database.models import Contribution
 from mdvt.database.util import db_set_or_update_user_setting
@@ -49,7 +49,7 @@ def api_get_media():
 
     return jsonify({
         'status': 'success',
-        'data': get_contrib_request(filter_type, filter_value)
+        'data': get_questions(filter_type, filter_value)
     })
 
 
