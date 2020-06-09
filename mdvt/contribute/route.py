@@ -59,15 +59,9 @@ def api_contribute():
 
     Expected request format, in json:
     {
-        type: <type of the contribution (e.g. P180)>,
-        data: <data, format specificed below>
-        csrf: <csrf value>
-    }
-
-    Data format for depicts:
-    {
-        claim_id: <claim id>,
+        question_id: <question id>,
         status: <true / false / skip>
+        csrf: <csrf value>
     }
     """
     if not is_logged_in():
@@ -98,11 +92,8 @@ def api_contribute():
     print(contrib_request)
 
     db.session.add(Contribution(user_id=session['user_id'],
-                                page_id=0,
-                                question='{{type: {}, claim_id: {}}}'.format(
-                                    contrib_request['type'],
-                                    contrib_request['data']['claim_id']),
-                                answer=contrib_request['data']['status']))
+                                question_id=contrib_request['question_id'],
+                                answer=contrib_request['status']))
     db.session.commit()
 
     session['csrf'] = None

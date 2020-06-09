@@ -153,6 +153,7 @@ def get_questions(filter_type, filter_value, continue_key=None):
         page_id = existing_question.page_id
 
         question = {
+            'question_id': existing_question.id,
             'media_page': api_info_url(str(page_id)),
             'media_page_id': page_id,
             'media_title': page['query']['pages'][str(page_id)]['title'],
@@ -163,6 +164,7 @@ def get_questions(filter_type, filter_value, continue_key=None):
             'csrf': gen_csrf()
         }
         return question
+
     got_questions = False
     if filter_type == 'recent':
         latest_files, continue_key = api_all_images(continue_key)

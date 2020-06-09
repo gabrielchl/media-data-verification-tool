@@ -9,7 +9,7 @@ switch (filter_type) {
         break;
 }
 
-var current_claim;
+var question_id;
 var csrf;
 
 function populate_media_metadata(media_title) {
@@ -48,7 +48,7 @@ $.get({
         $('.contribute-card .card-img-top').attr('src', 'https://commons.wikimedia.org/wiki/Special:FilePath/' + response.media_title + '?width=500');
         $('#statement').html('<a href="https://www.wikidata.org/wiki/' + response.depict_id + '" target="_blank" data-toggle="popover">' + response.depict_label + '</a> can be seen in the above <a href="' + response.media_page + '" target="_blank">image</a>');
         $('#media-title').html(response.media_title);
-        current_claim = response.claim_id;
+        question_id = response.question_id;
         csrf = response.csrf;
 
         populate_media_metadata(response.media_title);
@@ -85,11 +85,8 @@ function post_contribution(status) {
     $.post({
         url: '../api/contribute',
         data: JSON.stringify({
-            type: 'P180',
-            data: {
-                claim_id: current_claim,
-                status: status
-            },
+            question_id: question_id,
+            status: status,
             csrf : csrf
         }),
         contentType : 'application/json'

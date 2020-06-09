@@ -40,8 +40,9 @@ class Question(db.Model):
 class Contribution(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    page_id = db.Column(db.Integer, nullable=False)
-    question = db.Column(db.String(255), nullable=False)
+    question_id = db.Column(db.Integer,
+                            db.ForeignKey('question.id'),
+                            nullable=False)
     answer = db.Column(db.String(255), nullable=False)
     undo = db.Column(db.Boolean, nullable=False, default=False)
     triggered_change = db.Column(db.Boolean, nullable=False, default=False)
@@ -50,5 +51,5 @@ class Contribution(db.Model):
 
     def __repr__(self):
         return '<Contribution {} {} {} {} {} {} {}>'.format(
-            self.id, self.user_id, self.page_id, self.data_type, self.data,
+            self.id, self.user_id, self.question, self.answer,
             self.undo, self.triggered_change, self.time_created)
