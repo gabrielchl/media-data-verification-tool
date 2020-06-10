@@ -141,14 +141,15 @@ def get_questions(filter_type, filter_value, continue_key=None):
                 }
             ).json()
 
-            claim_value = requests.get(
+            claim_value = (requests.get(
                 'https://commons.wikimedia.org/w/api.php',
                 params={
                     'action': 'wbgetclaims',
                     'format': 'json',
                     'claim': question.claim_id,
                 }
-            ).json()['claims']['P180'][0]['mainsnak']['datavalue']['value']['id']
+            ).json()['claims']['P180'][0]['mainsnak']
+                    ['datavalue']['value']['id'])
 
             claim = requests.get(
                 'https://www.wikidata.org/w/api.php',
