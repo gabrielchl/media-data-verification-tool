@@ -4,7 +4,7 @@ import requests
 import secrets
 
 from mdvt import db
-from mdvt.database.models import Question
+from mdvt.database.models import Contribution, Question
 from mdvt.database.util import db_get_existing_entry
 
 
@@ -116,54 +116,66 @@ def gen_csrf():
 
 # TODO: solve 414 or use id instead of titles
 def get_questions(filter_type, filter_value, continue_key=None):
-    existing_question = db_get_existing_entry(Question,
-                                              filter_type=filter_type,
-                                              filter_value=filter_value)
-    if existing_question is not None:
-        page = requests.get(
-            'https://commons.wikimedia.org/w/api.php',
-            params={
-                'action': 'query',
-                'format': 'json',
-                'pageids': existing_question.page_id,
+    true_count = 0
+    false_count = 0
+    questions = (Question.query
+                 .filter(Question.filter_type == filter_type)
+                 .filter(Question.filter_value == filter_value)
+                 .all())
+    for question in questions:
+        true_count = (Contribution.query
+                      .filter(Contribution.question_id == question.id)
+                      .filter(Contribution.answer == 'true')
+                      .count())
+        false_count = (Contribution.query
+                       .filter(Contribution.question_id == question.id)
+                       .filter(Contribution.answer == 'false')
+                       .count())
+        if not true_count and not false_count:
+            page = requests.get(
+                'https://commons.wikimedia.org/w/api.php',
+                params={
+                    'action': 'query',
+                    'format': 'json',
+                    'pageids': question.page_id,
+                }
+            ).json()
+
+            claim_value = requests.get(
+                'https://commons.wikimedia.org/w/api.php',
+                params={
+                    'action': 'wbgetclaims',
+                    'format': 'json',
+                    'claim': question.claim_id,
+                }
+            ).json()['claims']['P180'][0]['mainsnak']['datavalue']['value']['id']
+
+            claim = requests.get(
+                'https://www.wikidata.org/w/api.php',
+                params={
+                    'action': 'wbgetentities',
+                    'format': 'json',
+                    'ids': claim_value,
+                    'languages': 'en'
+                }
+            ).json()['entities'][claim_value]
+            claim_label = claim['labels']['en']['value']
+            claim_description = claim['descriptions']['en']['value']
+
+            page_id = question.page_id
+
+            return_question = {
+                'question_id': question.id,
+                'media_page': api_info_url(str(page_id)),
+                'media_page_id': page_id,
+                'media_title': page['query']['pages'][str(page_id)]['title'],
+                'depict_id': claim_value,
+                'depict_label': claim_label,
+                'depict_description': claim_description,
+                'claim_id': question.claim_id,
+                'csrf': gen_csrf()
             }
-        ).json()
-
-        claim_value = requests.get(
-            'https://commons.wikimedia.org/w/api.php',
-            params={
-                'action': 'wbgetclaims',
-                'format': 'json',
-                'claim': existing_question.claim_id,
-            }
-        ).json()['claims']['P180'][0]['mainsnak']['datavalue']['value']['id']
-
-        claim = requests.get(
-            'https://www.wikidata.org/w/api.php',
-            params={
-                'action': 'wbgetentities',
-                'format': 'json',
-                'ids': claim_value,
-                'languages': 'en'
-            }
-        ).json()['entities'][claim_value]
-        claim_label = claim['labels']['en']['value']
-        claim_description = claim['descriptions']['en']['value']
-
-        page_id = existing_question.page_id
-
-        question = {
-            'question_id': existing_question.id,
-            'media_page': api_info_url(str(page_id)),
-            'media_page_id': page_id,
-            'media_title': page['query']['pages'][str(page_id)]['title'],
-            'depict_id': claim_value,
-            'depict_label': claim_label,
-            'depict_description': claim_description,
-            'claim_id': existing_question.claim_id,
-            'csrf': gen_csrf()
-        }
-        return question
+            return return_question
 
     got_questions = False
     if filter_type == 'recent':
