@@ -108,9 +108,9 @@ def api_get_id(title):
     return list(response['query']['pages'].keys())[0]
 
 
-def gen_csrf():
+def gen_csrf(question_id):
     csrf = secrets.token_hex(16)
-    session['csrf'] = csrf
+    session['csrf'] = [question_id, csrf]
     return csrf
 
 
@@ -174,7 +174,7 @@ def get_questions(filter_type, filter_value, continue_key=None):
                 'depict_label': claim_label,
                 'depict_description': claim_description,
                 'claim_id': question.claim_id,
-                'csrf': gen_csrf()
+                'csrf': gen_csrf(question.id)
             }
             return return_question
 

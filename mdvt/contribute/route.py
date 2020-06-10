@@ -80,11 +80,19 @@ def api_contribute():
             }
         }), 401
 
-    if request.get_json()['csrf'] != session['csrf']:
+    if request.get_json()['csrf'] != session['csrf'][1]:
         return jsonify({
             'status': 'fail',
             'data': {
                 'title': 'CSRF token not recognized'
+            }
+        }), 401
+
+    if request.get_json()['question_id'] != session['csrf'][0]:
+        return jsonify({
+            'status': 'fail',
+            'data': {
+                'title': 'Wrong question ID'
             }
         }), 401
 
