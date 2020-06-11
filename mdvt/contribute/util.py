@@ -118,6 +118,7 @@ def gen_csrf(question_id):
 def get_questions(filter_type, filter_value, continue_key=None):
     true_count = 0
     false_count = 0
+    skip_count = 0
     questions = (Question.query
                  .filter(Question.filter_type == filter_type)
                  .filter(Question.filter_value == filter_value)
@@ -131,7 +132,12 @@ def get_questions(filter_type, filter_value, continue_key=None):
                        .filter(Contribution.question_id == question.id)
                        .filter(Contribution.answer == 'false')
                        .count())
-        if not true_count and not false_count:
+        skip_count = (Contribution.query
+                      .filter(Contribution.question_id == question.id)
+                      .filter(Contribution.answer == 'skip')
+                      .filter(Contribution.user_id == session['user_id'])
+                      .count())
+        if not true_count and not false_count and not skip_count:
             page = requests.get(
                 'https://commons.wikimedia.org/w/api.php',
                 params={
