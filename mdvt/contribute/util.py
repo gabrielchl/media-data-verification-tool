@@ -4,6 +4,7 @@ import requests
 import secrets
 
 from mdvt import db
+from mdvt.config.config import config
 from mdvt.database.models import Contribution, Question
 from mdvt.database.util import db_get_existing_entry
 
@@ -22,7 +23,7 @@ def api_all_images(continue_key=None):
         params['aicontinue'] = continue_key
 
     response = requests.get(
-        'https://commons.wikimedia.org/w/api.php',
+        config['COMMONS_API_URI'],
         params=params
     ).json()
 
@@ -45,7 +46,7 @@ def api_category_members(category_name, continue_key=None):
         params['gcmcontinue'] = continue_key
 
     response = requests.get(
-        'https://commons.wikimedia.org/w/api.php',
+        config['COMMONS_API_URI'],
         params=params
     ).json()
 
@@ -68,7 +69,7 @@ def api_tagged_changes(tag, continue_key=None):
         params['rccontinue'] = continue_key
 
     response = requests.get(
-        'https://commons.wikimedia.org/w/api.php',
+        config['COMMONS_API_URI'],
         params=params
     ).json()
 
@@ -86,7 +87,7 @@ def api_info_url(pageid):
     }
 
     response = requests.get(
-        'https://commons.wikimedia.org/w/api.php',
+        config['COMMONS_API_URI'],
         params=params
     ).json()
 
@@ -101,7 +102,7 @@ def api_get_id(title):
     }
 
     response = requests.get(
-        'https://commons.wikimedia.org/w/api.php',
+        config['COMMONS_API_URI'],
         params=params
     ).json()
 
@@ -139,7 +140,7 @@ def get_questions(filter_type, filter_value, continue_key=None):
                       .count())
         if not true_count and not false_count and not skip_count:
             page = requests.get(
-                'https://commons.wikimedia.org/w/api.php',
+                config['COMMONS_API_URI'],
                 params={
                     'action': 'query',
                     'format': 'json',
@@ -148,7 +149,7 @@ def get_questions(filter_type, filter_value, continue_key=None):
             ).json()
 
             claim_value = (requests.get(
-                'https://commons.wikimedia.org/w/api.php',
+                config['COMMONS_API_URI'],
                 params={
                     'action': 'wbgetclaims',
                     'format': 'json',
@@ -158,7 +159,7 @@ def get_questions(filter_type, filter_value, continue_key=None):
                     ['datavalue']['value']['id'])
 
             claim = requests.get(
-                'https://www.wikidata.org/w/api.php',
+                config['WIKIDATA_API_URI'],
                 params={
                     'action': 'wbgetentities',
                     'format': 'json',
@@ -196,7 +197,7 @@ def get_questions(filter_type, filter_value, continue_key=None):
         file_titles = {change['title'] for change in changes}
 
     statements = requests.get(
-        'https://commons.wikimedia.org/w/api.php',
+        config['COMMONS_API_URI'],
         params={
             'action': 'wbgetentities',
             'format': 'json',
@@ -216,6 +217,7 @@ def get_questions(filter_type, filter_value, continue_key=None):
                     for depict in statements['P180']:
                         existing_claim = (
                             db_get_existing_entry(Question,
+                                                  type='P180',
                                                   claim_id=depict['id']))
                         if existing_claim is None:
                             db.session.add(Question(page_id=entity['pageid'],
@@ -236,7 +238,7 @@ def get_questions(filter_type, filter_value, continue_key=None):
 
 def get_file_depicts(file_name):
     statements = requests.get(
-        'https://commons.wikimedia.org/w/api.php',
+        config['COMMONS_API_URI'],
         params={
             'action': 'wbgetentities',
             'format': 'json',
@@ -257,7 +259,7 @@ def get_file_depicts(file_name):
         claim_id = statements['P180'][0]['id']
 
         depict = requests.get(
-            'https://www.wikidata.org/w/api.php',
+            config['WIKIDATA_API_URI'],
             params={
                 'action': 'wbgetentities',
                 'format': 'json',
