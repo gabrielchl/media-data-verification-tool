@@ -28,13 +28,23 @@ class Question(db.Model):
     page_id = db.Column(db.Integer, nullable=False)
     type = db.Column(db.String(255), nullable=False)
     claim_id = db.Column(db.String(255), nullable=False)
+
+    def __repr__(self):
+        return '<Question {} {} {} {}>'.format(
+            self.id, self.page_id, self.type, self.claim_id)
+
+
+class FilteredRef(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    question_id = db.Column(db.Integer,
+                            db.ForeignKey('question.id'),
+                            nullable=False)
     filter_type = db.Column(db.String(255), nullable=False)
     filter_value = db.Column(db.String(255), nullable=True)
 
     def __repr__(self):
-        return '<Question {} {} {} {} {} {}>'.format(
-            self.id, self.page_id, self.type, self.claim_id,
-            self.filter_type, self.filter_value)
+        return '<FilteredRef {} {} {} {}>'.format(
+            self.id, self.question_id, self.filter_type, self.filter_value)
 
 
 class Contribution(db.Model):

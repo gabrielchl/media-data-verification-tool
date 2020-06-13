@@ -5,7 +5,7 @@ import secrets
 
 from mdvt import db
 from mdvt.config.config import config
-from mdvt.database.models import Contribution, Question
+from mdvt.database.models import Contribution, FilteredRef, Question
 from mdvt.database.util import db_get_existing_entry
 
 
@@ -120,11 +120,12 @@ def get_questions(filter_type, filter_value, continue_key=None):
     true_count = 0
     false_count = 0
     skip_count = 0
-    questions = (Question.query
-                 .filter(Question.filter_type == filter_type)
-                 .filter(Question.filter_value == filter_value)
-                 .all())
-    for question in questions:
+    question_ids = (FilteredRef.query
+                    .filter(FilteredRef.filter_type == filter_type)
+                    .filter(FilteredRef.filter_value == filter_value)
+                    .all())
+    for question_id in question_ids:
+        question = Question.query.filter_by(id=question_id.id).first()
         true_count = (Contribution.query
                       .filter(Contribution.question_id == question.id)
                       .filter(Contribution.answer == 'true')
@@ -185,7 +186,6 @@ def get_questions(filter_type, filter_value, continue_key=None):
             }
             return return_question
 
-    got_questions = False
     if filter_type == 'recent':
         latest_files, continue_key = api_all_images(continue_key)
         file_titles = {file['title'] for file in latest_files}
@@ -220,19 +220,20 @@ def get_questions(filter_type, filter_value, continue_key=None):
                                                   type='P180',
                                                   claim_id=depict['id']))
                         if existing_claim is None:
-                            db.session.add(Question(page_id=entity['pageid'],
+                            new_question = Question(page_id=entity['pageid'],
                                                     type='P180',
-                                                    claim_id=depict['id'],
-                                                    filter_type=filter_type,
-                                                    filter_value=filter_value))
+                                                    claim_id=depict['id'])
+                            db.session.add(new_question)
                             db.session.commit()
-                            got_questions = True
+                            db.session.add(FilteredRef(
+                                question_id=new_question.id,
+                                filter_type=filter_type,
+                                filter_value=filter_value
+                            ))
+                            db.session.commit()
             except KeyError:
                 continue
 
-    if got_questions:
-        return
-    else:
         get_questions(filter_type, filter_value, continue_key)
 
 
