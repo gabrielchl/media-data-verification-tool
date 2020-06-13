@@ -75,7 +75,7 @@ function get_media() {
                     trigger: 'hover',
                     html: true,
                     placement: 'top',
-                    template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><img class="img-fluid" src="https://commons.wikimedia.org/wiki/Special:FilePath/' + image_title + '"/><div class="popover-body"></div></div>',
+                    template: '<div class="popover shadow" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><img class="img-fluid" src="https://commons.wikimedia.org/wiki/Special:FilePath/' + image_title + '"/><div class="popover-body"></div></div>',
                     content: response.entities[depict_id].descriptions.en.value
                 });
             });
