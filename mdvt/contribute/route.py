@@ -1,7 +1,9 @@
 from flask import (Blueprint, jsonify, render_template, redirect, request,
                    session, url_for)
 
-from mdvt.contribute.util import get_contrib_request
+from mdvt.contribute.util import get_questions
+from mdvt import db
+from mdvt.database.models import Contribution
 from mdvt.database.util import db_set_or_update_user_setting
 from mdvt.main.util import is_logged_in
 
@@ -47,12 +49,21 @@ def api_get_media():
 
     return jsonify({
         'status': 'success',
-        'data': get_contrib_request(filter_type, filter_value)
+        'data': get_questions(filter_type, filter_value)
     })
 
 
 @contribute_bp.route('/api/contribute', methods=['post'])
 def api_contribute():
+    """Handles contribution requests.
+
+    Expected request format, in json:
+    {
+        question_id: <question id>,
+        status: <true / false / skip>
+        csrf: <csrf value>
+    }
+    """
     if not is_logged_in():
         return jsonify({
             'status': 'fail',
@@ -69,13 +80,29 @@ def api_contribute():
             }
         }), 401
 
-    if request.get_json()['csrf'] != session['csrf']:
+    if request.get_json()['csrf'] != session['csrf'][1]:
         return jsonify({
             'status': 'fail',
             'data': {
                 'title': 'CSRF token not recognized'
             }
         }), 401
+
+    if request.get_json()['question_id'] != session['csrf'][0]:
+        return jsonify({
+            'status': 'fail',
+            'data': {
+                'title': 'Wrong question ID'
+            }
+        }), 401
+
+    contrib_request = request.get_json()
+    print(contrib_request)
+
+    db.session.add(Contribution(user_id=session['user_id'],
+                                question_id=contrib_request['question_id'],
+                                answer=contrib_request['status']))
+    db.session.commit()
 
     session['csrf'] = None
     return jsonify({

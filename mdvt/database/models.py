@@ -23,12 +23,37 @@ class UserSetting(db.Model):
             self.id, self.user_id, self.key, self.value)
 
 
+class Question(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    page_id = db.Column(db.Integer, nullable=False)
+    type = db.Column(db.String(255), nullable=False)
+    claim_id = db.Column(db.String(255), nullable=False)
+
+    def __repr__(self):
+        return '<Question {} {} {} {}>'.format(
+            self.id, self.page_id, self.type, self.claim_id)
+
+
+class FilteredRef(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    question_id = db.Column(db.Integer,
+                            db.ForeignKey('question.id'),
+                            nullable=False)
+    filter_type = db.Column(db.String(255), nullable=False)
+    filter_value = db.Column(db.String(255), nullable=True)
+
+    def __repr__(self):
+        return '<FilteredRef {} {} {} {}>'.format(
+            self.id, self.question_id, self.filter_type, self.filter_value)
+
+
 class Contribution(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    page_id = db.Column(db.Integer, nullable=False)
-    data_type = db.Column(db.String(20), nullable=False)
-    data = db.Column(db.String(20), nullable=False)
+    question_id = db.Column(db.Integer,
+                            db.ForeignKey('question.id'),
+                            nullable=False)
+    answer = db.Column(db.String(255), nullable=False)
     undo = db.Column(db.Boolean, nullable=False, default=False)
     triggered_change = db.Column(db.Boolean, nullable=False, default=False)
     time_created = db.Column(db.DateTime, nullable=False,
@@ -36,5 +61,5 @@ class Contribution(db.Model):
 
     def __repr__(self):
         return '<Contribution {} {} {} {} {} {} {}>'.format(
-            self.id, self.user_id, self.page_id, self.data_type, self.data,
+            self.id, self.user_id, self.question, self.answer,
             self.undo, self.triggered_change, self.time_created)
