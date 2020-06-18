@@ -125,7 +125,7 @@ def get_questions(filter_type, filter_value, continue_key=None):
                     .filter(FilteredRef.filter_value == filter_value)
                     .all())
     for question_id in question_ids:
-        question = Question.query.filter_by(id=question_id.id).first()
+        question = Question.query.filter_by(id=question_id.question_id).first()
         true_count = (Contribution.query
                       .filter(Contribution.question_id == question.id)
                       .filter(Contribution.answer == 'true')
@@ -168,8 +168,8 @@ def get_questions(filter_type, filter_value, continue_key=None):
                     'languages': 'en'
                 }
             ).json()['entities'][claim_value]
-            claim_label = claim['labels']['en']['value']
-            claim_description = claim['descriptions']['en']['value']
+            claim_label = claim['labels']['en']['value'] or ''
+            claim_description = claim['descriptions']['en']['value'] or ''
 
             page_id = question.page_id
 
@@ -234,7 +234,7 @@ def get_questions(filter_type, filter_value, continue_key=None):
             except KeyError:
                 continue
 
-        get_questions(filter_type, filter_value, continue_key)
+    return get_questions(filter_type, filter_value, continue_key)
 
 
 def get_file_depicts(file_name):
