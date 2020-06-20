@@ -34,6 +34,18 @@ class Question(db.Model):
             self.id, self.page_id, self.type, self.claim_id)
 
 
+class TestQuestion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    page_id = db.Column(db.Integer, nullable=False)
+    type = db.Column(db.String(255), nullable=False)
+    value = db.Column(db.String(255), nullable=False)
+    correct_ans = db.Column(db.String(255), nullable=False)
+
+    def __repr__(self):
+        return '<TestQuestion {} {} {} {}>'.format(
+            self.id, self.page_id, self.type, self.value)
+
+
 class FilteredRef(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question_id = db.Column(db.Integer,

@@ -1,0 +1,10 @@
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (80220772, "P180", "Q90960971", "true");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (68094356, "P180", "Q879641", "true");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (61435627, "P180", "Q2361244", "true");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (79436209, "P180", "Q37454273", "true");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (64783510, "P180", "Q465837", "true");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (59456067, "P180", "Q39715", "true");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (64783510, "P180", "Q465837", "true");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (71534207, "P180", "Q41955438", "true");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (51409667, "P180", "Q22731", "true");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (55960809, "P180", "Q1186358", "true");
