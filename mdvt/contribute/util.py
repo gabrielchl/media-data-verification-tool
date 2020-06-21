@@ -5,8 +5,41 @@ import secrets
 
 from mdvt import db
 from mdvt.config.config import config
-from mdvt.database.models import Contribution, FilteredRef, Question
+from mdvt.database.models import (Contribution, FilteredRef, Question,
+                                  TestContribution, TestQuestion)
 from mdvt.database.util import db_get_existing_entry
+
+
+def get_contrib_count(user_id=None):
+    contribs = Contribution.query
+
+    if user_id is not None:
+        contribs = contribs.filter(Contribution.user_id == user_id)
+
+    return contribs.count()
+
+
+def get_test_contrib_score(user_id=None, range=None):
+    test_contribs = db.session.query(TestContribution, TestQuestion)
+
+    if user_id is not None:
+        test_contribs = test_contribs.filter(TestContribution.user_id
+                                             == user_id)
+
+    test_contribs = test_contribs.join(TestQuestion,
+                                       TestContribution.question_id
+                                       == TestQuestion.id)
+
+    right_count = test_contribs.filter(TestQuestion.correct_ans
+                                       == TestContribution.answer).count()
+    wrong_count = (test_contribs.filter(TestContribution.answer != 'skip')
+                                .filter(TestQuestion.correct_ans
+                                        != TestContribution.answer).count())
+
+    if right_count + wrong_count:
+        return right_count / (right_count + wrong_count)
+    else:
+        return 0
 
 
 def api_all_images(continue_key=None):
@@ -235,6 +268,66 @@ def get_questions(filter_type, filter_value, continue_key=None):
                 continue
 
     return get_questions(filter_type, filter_value, continue_key)
+
+
+def get_test_questions():
+    test_questions = TestQuestion.query.all()
+
+    for question in test_questions:
+        answered = (TestContribution.query
+                    .filter(TestContribution.question_id == question.id)
+                    .filter(TestContribution.user_id == session['user_id'])
+                    .count())
+        if not answered:
+            test_question = question
+            break
+
+    if not test_question:
+        test_question = TestQuestion.query.first()
+
+    page = requests.get(
+        config['COMMONS_API_URI'],
+        params={
+            'action': 'query',
+            'format': 'json',
+            'pageids': test_question.page_id,
+        }
+    ).json()
+
+    claim = requests.get(
+        config['WIKIDATA_API_URI'],
+        params={
+            'action': 'wbgetentities',
+            'format': 'json',
+            'ids': test_question.value,
+            'languages': 'en'
+        }
+    ).json()['entities'][test_question.value]
+
+    try:
+        claim_label = claim['labels']['en']['value']
+    except KeyError:
+        claim_label = ''
+
+    try:
+        claim_description = claim['descriptions']['en']['value']
+    except KeyError:
+        claim_description = ''
+
+    page_id = test_question.page_id
+
+    return_question = {
+        'question_id': 'T{}'.format(test_question.id),
+        'media_page': api_info_url(str(page_id)),
+        'media_page_id': page_id,
+        'media_title': page['query']['pages'][str(page_id)]['title'],
+        'depict_id': test_question.value,
+        'depict_label': claim_label,
+        'depict_description': claim_description,
+        # 'claim_id': question.claim_id,
+        'csrf': gen_csrf('T{}'.format(test_question.id))
+    }
+    return return_question
 
 
 def get_file_depicts(file_name):

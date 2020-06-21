@@ -73,5 +73,21 @@ class Contribution(db.Model):
 
     def __repr__(self):
         return '<Contribution {} {} {} {} {} {} {}>'.format(
-            self.id, self.user_id, self.question, self.answer,
+            self.id, self.user_id, self.question_id, self.answer,
             self.undo, self.triggered_change, self.time_created)
+
+
+class TestContribution(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    question_id = db.Column(db.Integer,
+                            db.ForeignKey('test_question.id'),
+                            nullable=False)
+    answer = db.Column(db.String(255), nullable=False)
+    time_created = db.Column(db.DateTime, nullable=False,
+                             server_default=func.now())
+
+    def __repr__(self):
+        return '<TestContribution {} {} {} {} {} {} {}>'.format(
+            self.id, self.user_id, self.question_id, self.answer,
+            self.time_created)
