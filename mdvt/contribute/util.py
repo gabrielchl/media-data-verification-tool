@@ -19,12 +19,16 @@ def get_contrib_count(user_id=None):
     return contribs.count()
 
 
-def get_test_contrib_score(user_id=None, range=None):
+def get_test_contrib_score(user_id=None, count=None, start_date=None):
     test_contribs = db.session.query(TestContribution, TestQuestion)
 
     if user_id is not None:
         test_contribs = test_contribs.filter(TestContribution.user_id
                                              == user_id)
+
+    if count is not None:
+        test_contribs = test_contribs.order_by(
+            TestContribution.time_created.desc()).limit(count)
 
     test_contribs = test_contribs.join(TestQuestion,
                                        TestContribution.question_id

@@ -40,7 +40,7 @@ def contribute():
 
 @contribute_bp.route('/api/get-media')
 def api_get_media():
-    if (get_contrib_count(session['user_id'])
+    if (not get_contrib_count(session['user_id'])
             and get_test_contrib_score(session['user_id']) < 0.8):
         return jsonify({
             'status': 'success',
