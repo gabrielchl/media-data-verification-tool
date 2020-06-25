@@ -8,3 +8,13 @@ INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (64783510, 
 INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (71534207, "P180", "Q41955438", "true");
 INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (51409667, "P180", "Q22731", "true");
 INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (55960809, "P180", "Q1186358", "true");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (76870472, "P180", "Q127933", "false");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (45581404, "P180", "Q7380", "false");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (78125545, "P180", "Q11208", "false");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (79702151, "P180", "Q1136525", "false");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (68193839, "P180", "Q98", "false");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (41044145, "P180", "Q140", "false");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (52452680, "P180", "Q2092297", "false");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (41837276, "P180", "Q2", "false");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (41734886, "P180", "Q5638", "false");
+INSERT INTO test_question (page_id, type, value, correct_ans) VALUES (21422679, "P180", "Q111", "false");
