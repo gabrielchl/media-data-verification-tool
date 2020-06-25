@@ -96,7 +96,7 @@ function post_contribution(status) {
         contentType : 'application/json'
     }).done(function(response) {
         console.log(response);
-        show_toast('success', 'Theoretically your contribution is recorded.');
+        show_toast('success', response.data.name);
         $('.contribute-card').addClass('loading');
         $('.contribute-card .card-img-top').attr('src', '');
         $('#media-title').html('');

@@ -19,6 +19,16 @@ def get_contrib_count(user_id=None):
     return contribs.count()
 
 
+def get_test_contrib_count(user_id=None):
+    test_contribs = TestContribution.query
+
+    if user_id is not None:
+        test_contribs = test_contribs.filter(TestContribution.user_id
+                                             == user_id)
+
+    return test_contribs.count()
+
+
 def get_test_contrib_score(user_id=None, count=None, start_date=None):
     test_contribs = db.session.query(TestContribution, TestQuestion)
 
@@ -205,8 +215,14 @@ def get_questions(filter_type, filter_value, continue_key=None):
                     'languages': 'en'
                 }
             ).json()['entities'][claim_value]
-            claim_label = claim['labels']['en']['value'] or ''
-            claim_description = claim['descriptions']['en']['value'] or ''
+            try:
+                claim_label = claim['labels']['en']['value']
+            except KeyError:
+                claim_label = ''
+            try:
+                claim_description = claim['descriptions']['en']['value']
+            except KeyError:
+                claim_description = ''
 
             page_id = question.page_id
 
