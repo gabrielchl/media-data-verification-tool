@@ -1,0 +1,26 @@
+{% extends "main/layout.html" %}
+{% block content %}
+
+<div class="container">
+    <h2 class="my-5">My Contributions</h2>
+
+    <div class="row">
+        {% for contrib in contributions %}
+        <div class="col-md-3 my-3">
+            <div class="card">
+                <img class="card-img-top" src="{{ contrib[1]['page_id'] }}">
+                <div class="card-body">
+                    <span class="claim-id">{{ contrib[1]['claim_id'] }}</span>: {{ contrib[0]['answer'] | title }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}
+{% block scripts %}
+
+<script src="{{ url_for('static', filename='my-contributions.js') }}"></script>
+
+{% endblock scripts %}
