@@ -4,7 +4,7 @@ $('.claim-id').each(function() {
     $.get("https://commons.wikimedia.org/w/api.php", {
     	"action": "wbgetclaims",
     	"format": "json",
-    	"claim": "M91547848$1cb3d7bb-4b35-d1c6-24d0-7c8aaaa0b91d",
+        "claim": claim_id,
         "origin": "*"
     }, function(claim_data) {
         var claim_id = claim_data.claims.P180[0].mainsnak.datavalue.value.id;
