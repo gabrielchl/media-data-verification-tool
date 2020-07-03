@@ -1,35 +1,36 @@
-$('.claim-id').each(function() {
-    var replacement = $(this);
-    var claim_id = $(this).text();
+$('.contribution-card').each(function() {
+    var claim_label = $(this).find('.claim-id');
+    var claim_link = $(this).find('.claim-link');
+    var entity_id = claim_label.text();
     $.get("https://commons.wikimedia.org/w/api.php", {
     	"action": "wbgetclaims",
     	"format": "json",
-        "claim": claim_id,
+        "claim": entity_id,
         "origin": "*"
     }, function(claim_data) {
         var claim_id = claim_data.claims.P180[0].mainsnak.datavalue.value.id;
+        claim_link.attr("href", "https://www.wikidata.org/wiki/" + claim_id);
         $.get("https://www.wikidata.org/w/api.php", {
         	"action": "wbgetentities",
         	"format": "json",
         	"ids": claim_id,
             "origin": "*"
         }, function(entity_data) {
-            replacement.html(entity_data.entities[claim_id].labels.en.value);
-        })
-    })
-});
+            claim_label.html(entity_data.entities[claim_id].labels.en.value);
+        });
+    });
 
-$('.card-img-top').each(function() {
-    var img = $(this);
-    var claim_id = $(this).text();
+    var img = $(this).find('.card-img-top');
+    var img_link = $(this).find('.img-link');
+    var claim_id = img.text();
     $.get("https://commons.wikimedia.org/w/api.php", {
     	"action": "query",
     	"format": "json",
     	"pageids": img.attr("src"),
         "origin": "*"
     }, function(query_data) {
-        console.log(query_data);
         var title = query_data.query.pages[img.attr("src")].title;
         img.attr("src", 'https://commons.wikimedia.org/wiki/Special:FilePath/' + title + '?width=300');
-    })
+        img_link.attr("href", "https://commons.wikimedia.org/wiki/" + title);
+    });
 });

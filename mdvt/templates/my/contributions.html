@@ -7,10 +7,13 @@
     <div class="row">
         {% for contrib in contributions %}
         <div class="col-md-3 my-3">
-            <div class="card">
-                <img class="card-img-top" src="{{ contrib[1]['page_id'] }}">
+            <div class="card contribution-card">
+                <a class="img-link" href="" target="_blank">
+                    <img class="card-img-top" src="{{ contrib[1]['page_id'] }}">
+                </a>
                 <div class="card-body">
-                    <span class="claim-id">{{ contrib[1]['claim_id'] }}</span>: {{ contrib[0]['answer'] | title }}
+                    <a class="claim-link" href="" target="_blank"><span class="claim-id">{{ contrib[1]['claim_id'] }}</span></a>: {{ contrib[0]['answer'] | title }}<br>
+                    <span class="text-muted">{{ contrib[0]['time_created'] }}</span>
                 </div>
             </div>
         </div>

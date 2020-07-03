@@ -8,4 +8,5 @@ def get_contributions():
     return (db.session.query(Contribution, Question)
             .filter(Contribution.user_id == session.get('user_id'))
             .join(Question, Contribution.question_id == Question.id)
+            .order_by(Contribution.id.desc())
             .all())
