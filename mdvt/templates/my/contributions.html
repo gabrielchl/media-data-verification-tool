@@ -9,11 +9,14 @@
         <div class="col-md-3 my-3">
             <div class="card contribution-card">
                 <a class="img-link" href="" target="_blank">
-                    <img class="card-img-top" src="{{ contrib[1]['page_id'] }}">
+                    <img class="card-img-top" src="{{ contrib['page_id'] }}">
                 </a>
                 <div class="card-body">
-                    <a class="claim-link" href="" target="_blank"><span class="claim-id">{{ contrib[1]['claim_id'] }}</span></a>: {{ contrib[0]['answer'] | title }}<br>
-                    <span class="text-muted">{{ contrib[0]['time_created'] }}</span>
+                    {% if contrib['contrib_type'] == 'test' %}
+                    <span class="badge badge-secondary">Test Question</span><br>
+                    {% endif %}
+                    <a class="claim-link" href="" target="_blank"><span class="claim-id">{{ contrib['claim_id'] }}</span></a>: {{ contrib['answer'] | title }}<br>
+                    <span class="text-muted">{{ contrib['time_created'] }}</span>
                 </div>
             </div>
         </div>
