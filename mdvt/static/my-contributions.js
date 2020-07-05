@@ -34,3 +34,17 @@ $('.contribution-card').each(function() {
         img_link.attr("href", "https://commons.wikimedia.org/wiki/" + title);
     });
 });
+
+var test_showing = true;
+
+$('#test-trigger').click(function() {
+    if (test_showing) {
+        $('.contribution-card.test-question').parent().hide();
+        $('#test-trigger').text('Show Test Questions');
+        test_showing = false;
+    } else {
+        $('.contribution-card.test-question').parent().show();
+        $('#test-trigger').text('Hide Test Questions');
+        test_showing = true;
+    }
+})

@@ -3,11 +3,12 @@
 
 <div class="container">
     <h2 class="my-5">My Contributions</h2>
+    <button id="test-trigger" class="btn btn-secondary">Hide Test Questions</button>
 
     <div class="row">
         {% for contrib in contributions %}
         <div class="col-md-3 my-3">
-            <div class="card contribution-card">
+            <div class="card contribution-card{{ ' test-question' if contrib['contrib_type'] == 'test' }}">
                 <a class="img-link" href="" target="_blank">
                     <img class="card-img-top" src="{{ contrib['page_id'] }}">
                 </a>
