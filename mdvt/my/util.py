@@ -37,5 +37,4 @@ def get_contributions():
                                     literal('test').label('contrib_type'))
                      .filter(TestContribution.user_id == session.get('user_id'))
                      .join(TestQuestion, TestContribution.question_id == TestQuestion.id))
-    # print(str(contribs.union(test_contribs)))
     return (contribs.union(test_contribs).order_by(Contribution.time_created.desc()).all())

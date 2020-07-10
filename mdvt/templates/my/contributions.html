@@ -6,6 +6,57 @@
     <button id="test-trigger" class="btn btn-secondary">Hide Test Questions</button>
 
     <div class="row">
+        <div class="col-md-3 my-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ stat_contributions }}
+                    </h5>
+                    <p class="card-text">
+                        Contributions
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 my-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ stat_tests }}
+                    </h5>
+                    <p class="card-text">
+                        Tests
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 my-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ stat_all_score }}
+                    </h5>
+                    <p class="card-text">
+                        Test avg. score (All)
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 my-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        {{ stat_10_score }}
+                    </h5>
+                    <p class="card-text">
+                        Test avg. score (Latest 10)
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
         {% for contrib in contributions %}
         <div class="col-md-3 my-3">
             <div class="card contribution-card{{ ' test-question' if contrib['contrib_type'] == 'test' }}">
