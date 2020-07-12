@@ -1,9 +1,11 @@
 from flask import (Blueprint, jsonify, render_template, redirect, request,
                    session, url_for)
 
-from mdvt.contribute.util import get_questions
+from mdvt.contribute.util import (get_contrib_count, get_questions,
+                                  get_test_contrib_count,
+                                  get_test_contrib_score, get_test_questions)
 from mdvt import db
-from mdvt.database.models import Contribution
+from mdvt.database.models import Contribution, TestContribution, TestQuestion
 from mdvt.database.util import db_set_or_update_user_setting
 from mdvt.main.util import is_logged_in
 
@@ -39,18 +41,25 @@ def contribute():
 
 @contribute_bp.route('/api/get-media')
 def api_get_media():
-    filter_type = request.args.get('filter_type', 'recent')
-    if filter_type == 'recent':
-        filter_value = None
-    elif filter_type == 'category':
-        filter_value = request.args.get('filter_value')
+    if (not get_contrib_count(session['user_id'])
+            and (get_test_contrib_score(session['user_id']) < 0.8
+                 or get_test_contrib_count(session['user_id']) < 5)):
+        return jsonify({
+            'status': 'success',
+            'data': get_test_questions()
+        })
     else:
-        filter_value = request.args.get('filter_value').replace('_', ' ')
-
-    return jsonify({
-        'status': 'success',
-        'data': get_questions(filter_type, filter_value)
-    })
+        filter_type = request.args.get('filter_type', 'recent')
+        if filter_type == 'recent':
+            filter_value = None
+        elif filter_type == 'category':
+            filter_value = request.args.get('filter_value')
+        else:
+            filter_value = request.args.get('filter_value').replace('_', ' ')
+        return jsonify({
+            'status': 'success',
+            'data': get_questions(filter_type, filter_value)
+        })
 
 
 @contribute_bp.route('/api/contribute', methods=['post'])
@@ -95,19 +104,38 @@ def api_contribute():
                 'title': 'Wrong question ID'
             }
         }), 401
+    session['csrf'] = None
 
     contrib_request = request.get_json()
-    print(contrib_request)
 
-    db.session.add(Contribution(user_id=session['user_id'],
-                                question_id=contrib_request['question_id'],
-                                answer=contrib_request['status']))
-    db.session.commit()
+    if contrib_request['question_id'][:1] == 'T':
+        question_id = int(contrib_request['question_id'][1:])
+        db.session.add(TestContribution(user_id=session['user_id'],
+                                        question_id=question_id,
+                                        answer=contrib_request['status']))
+        db.session.commit()
+        correct_ans = (TestQuestion.query
+                       .filter(TestQuestion.id == question_id)
+                       .first()
+                       .correct_ans)
+        correct = ('correct'
+                   if correct_ans == contrib_request['status']
+                   else 'wrong')
 
-    session['csrf'] = None
-    return jsonify({
-        'status': 'success',
-        'data': {
-            'name': 'success'
-        }
-    })
+        return jsonify({
+            'status': 'success',
+            'data': {
+                'name': 'Test result: {}'.format(correct)
+            }
+        })
+    else:
+        db.session.add(Contribution(user_id=session['user_id'],
+                                    question_id=contrib_request['question_id'],
+                                    answer=contrib_request['status']))
+        db.session.commit()
+        return jsonify({
+            'status': 'success',
+            'data': {
+                'name': 'Contribution recorded.'
+            }
+        })
