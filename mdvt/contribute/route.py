@@ -89,7 +89,8 @@ def api_contribute():
             }
         }), 401
 
-    if request.get_json()['csrf'] != session['csrf'][1]:
+    if (request.get_json()['csrf'] != session['csrf'][1]
+            or 'csrf' not in session):
         return jsonify({
             'status': 'fail',
             'data': {
@@ -108,7 +109,8 @@ def api_contribute():
 
     contrib_request = request.get_json()
 
-    if contrib_request['question_id'][:1] == 'T':
+    if (isinstance(contrib_request['question_id'], str)
+            and contrib_request['question_id'][:1] == 'T'):
         question_id = int(contrib_request['question_id'][1:])
         db.session.add(TestContribution(user_id=session['user_id'],
                                         question_id=question_id,

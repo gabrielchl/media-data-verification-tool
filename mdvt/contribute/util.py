@@ -38,7 +38,7 @@ def get_test_contrib_score(user_id=None, count=None, start_date=None):
 
     if count is not None:
         test_contribs = test_contribs.order_by(
-            TestContribution.time_created.desc()).limit(count)
+            TestContribution.time_created.desc()).limit(count).from_self()
 
     test_contribs = test_contribs.join(TestQuestion,
                                        TestContribution.question_id

@@ -12,6 +12,8 @@ db = SQLAlchemy(app)
 
 from mdvt.contribute.route import contribute_bp
 from mdvt.main.route import main_bp
+from mdvt.my.route import my_bp
 
 app.register_blueprint(main_bp)
 app.register_blueprint(contribute_bp)
+app.register_blueprint(my_bp)
