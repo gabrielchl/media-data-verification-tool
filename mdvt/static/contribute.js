@@ -47,7 +47,15 @@ function get_media() {
             $('.contribute-card').removeClass('loading');
             $('#img-link').attr('href', response.media_page);
             $('.contribute-card .card-img-top').attr('src', 'https://commons.wikimedia.org/wiki/Special:FilePath/' + response.media_title + '?width=500');
-            $('#statement').html('<a href="https://www.wikidata.org/wiki/' + response.depict_id + '" target="_blank" data-toggle="popover">' + response.depict_label + '</a> can be seen in the above <a href="' + response.media_page + '" target="_blank">image</a>');
+
+            switch (response.type) {
+                case 'P180':
+                    $('#statement').html('<a href="https://www.wikidata.org/wiki/' + response.depict_id + '" target="_blank" data-toggle="popover">' + response.depict_label + '</a> can be seen in the above <a href="' + response.media_page + '" target="_blank">image</a>');
+                    break;
+                case 'rank':
+                    $('#statement').html('<a href="https://www.wikidata.org/wiki/' + response.depict_id + '" target="_blank" data-toggle="popover">' + response.depict_label + '</a> is prominent in the above <a href="' + response.media_page + '" target="_blank">image</a>');
+                    break;
+            }
             $('#media-title').html(response.media_title);
             question_id = response.question_id;
             csrf = response.csrf;
