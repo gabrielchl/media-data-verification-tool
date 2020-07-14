@@ -1,3 +1,5 @@
+var question_type = getUrlParam('q-type', undefined);
+
 var filter_type = getUrlParam('filter-type', 'recent');
 var filter_value = '';
 switch (filter_type) {
@@ -36,6 +38,7 @@ function get_media() {
     $.get({
         url: '../api/get-media',
         data: {
+            question_type: question_type,
             filter_type: filter_type,
             filter_value: filter_value
         }

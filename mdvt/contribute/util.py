@@ -163,7 +163,7 @@ def gen_csrf(question_id):
 
 
 # TODO: solve 414 or use id instead of titles
-def get_questions(filter_type, filter_value, continue_key=None):
+def get_questions(question_type, filter_type, filter_value, continue_key=None):
     true_count = 0
     false_count = 0
     skip_count = 0
@@ -173,6 +173,8 @@ def get_questions(filter_type, filter_value, continue_key=None):
                     .all())
     for question_id in question_ids:
         question = Question.query.filter_by(id=question_id.question_id).first()
+        if question_type and question.type != question_type:
+            continue
         true_count = (Contribution.query
                       .filter(Contribution.question_id == question.id)
                       .filter(Contribution.answer == 'true')
@@ -361,7 +363,7 @@ def get_questions(filter_type, filter_value, continue_key=None):
             except KeyError:
                 continue
 
-    return get_questions(filter_type, filter_value, continue_key)
+    return get_questions(question_type, filter_type, filter_value, continue_key)
 
 
 def get_test_questions():
