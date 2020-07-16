@@ -67,7 +67,14 @@
                     {% if contrib['contrib_type'] == 'test' %}
                     <span class="badge badge-secondary">Test Question</span><br>
                     {% endif %}
-                    <a class="claim-link" href="" target="_blank"><span class="claim-id">{{ contrib['claim_id'] }}</span></a>: {{ contrib['answer'] | title }}<br>
+
+                    {% if contrib['type'] == 'P180' %}
+                    <a class="claim-link" href="" target="_blank"><span class="claim-id">{{ contrib['claim_id'] }}</span></a> is in the above image: {{ contrib['answer'] | title }}<br>
+                    {% endif %}
+                    {% if contrib['type'] == 'rank' %}
+                    <a class="claim-link" href="" target="_blank"><span class="claim-id">{{ contrib['claim_id'] }}</span></a> is dominant in the above image: {{ contrib['answer'] | title }}<br>
+                    {% endif %}
+
                     <span class="text-muted">{{ contrib['time_created'] }}</span>
                 </div>
             </div>

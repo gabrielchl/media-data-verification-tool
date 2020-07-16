@@ -4,7 +4,7 @@
 <div class="container mt-3">
     <div class="jumbotron">
         <h1 class="display-4">Welcome to MDVT!</h1>
-        <p class="lead">This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.</p>
+        <p class="lead">Media Data Verification Tool (MDVT) is a micro-contribution tool which enables volunteers to correct most of the depicts data which has been entered as structured data while uploading images on Wikimedia Commons.</p>
     </div>
 </div>
 
@@ -14,10 +14,20 @@
     <div class="row">
         <div class="col-md-4 mt-3">
             <div class="card">
+                <div class="card-body text-white bg-primary">
+                    <h5 class="card-title">Random</h5>
+                    <p class="card-text">Show me any type of questions!</p>
+                    <a href="/contribute?filter-type=recent" type="button" class="btn btn-outline-light btn-block">Start</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mt-3">
+            <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Depict Statements</h5>
+                    <h5 class="card-title">Depict</h5>
                     <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum felis mauris, fermentum quis magna sollicitudin.</p>
-                    <div class="row no-gutters card-btn-group">
+                    <a href="/contribute?q-type=P180&filter-type=recent" type="button" class="btn btn-outline-primary btn-block">Start</a>
+                    <!-- <div class="row no-gutters card-btn-group">
                         <div class="col">
                             <button type="button" class="btn btn-outline-primary btn-block" id="depict-start-btn">Start (from {{ default_filter_type }}{{ ' ' + default_filter_category | replace('_', ' ') | replace('Category:', '') if default_filter_type == 'category' }}{{ ' ' + default_filter_tag_name if default_filter_type == 'tag' }})</button>
                         </div>
@@ -26,15 +36,16 @@
                                 <i class="fas fa-cog"></i>
                             </button>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
         <div class="col-md-4 mt-3">
-            <div class="card text-white bg-secondary">
+            <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">More to come...</h5>
+                    <h5 class="card-title">Prominence</h5>
                     <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum felis mauris, fermentum quis magna sollicitudin.</p>
+                    <a href="/contribute?q-type=rank&filter-type=recent" type="button" class="btn btn-outline-primary btn-block">Start</a>
                 </div>
             </div>
         </div>
@@ -50,6 +61,7 @@
                     </button>
                 </div>
                 <form action="{{ url_for('contribute.contribute') }}" method="get" id="query-settings-form">
+                    <input type="hidden" name="q-type" value="depict">
                     <div class="modal-body">
                         <div class="row">
                             <div class="col">
