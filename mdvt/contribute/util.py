@@ -387,7 +387,7 @@ def get_questions(question_type, filter_type, filter_value, continue_key=None):
                     'media_page_id': page_id,
                     'media_title': page['query']['pages'][str(page_id)]['title'],
                     'depict_id': claim_value,
-                    'qualifier': qualivier_value,
+                    'qualifier': qualifier_value,
                     'depict_label': claim_label,
                     'depict_description': claim_description,
                     'claim_id': question.claim_id,
