@@ -10,6 +10,26 @@ from mdvt.database.models import (Contribution, FilteredRef, Question,
 from mdvt.database.util import db_get_existing_entry
 
 
+qualifiers = [
+    'P2677',
+    'P1354',
+    'P462',
+    'P518',
+    'P1114',
+    'P4878',
+    'P3828',
+    'P710',
+    'P1419',
+    'P6022',
+    'P186',
+    'P1884',
+    'P1552',
+    'P1545',
+    'P7380',
+    'P149'
+]
+
+
 def get_contrib_count(user_id=None):
     contribs = Contribution.query
 
@@ -162,6 +182,26 @@ def gen_csrf(question_id):
     return csrf
 
 
+def add_question_if_not_exist(question_type, page_id, depict_id,
+                              filter_type, filter_value):
+    existing_rank_claim = (
+        db_get_existing_entry(Question,
+                              type=question_type,
+                              claim_id=depict_id))
+    if existing_rank_claim is None:
+        new_question = Question(page_id=page_id,
+                                type=question_type,
+                                claim_id=depict_id)
+        db.session.add(new_question)
+        db.session.commit()
+        db.session.add(FilteredRef(
+            question_id=new_question.id,
+            filter_type=filter_type,
+            filter_value=filter_value
+        ))
+        db.session.commit()
+
+
 # TODO: solve 414 or use id instead of titles
 def get_questions(question_type, filter_type, filter_value, continue_key=None):
     true_count = 0
@@ -298,6 +338,62 @@ def get_questions(question_type, filter_type, filter_value, continue_key=None):
                     'csrf': gen_csrf(question.id)
                 }
                 return return_question
+            else:
+                page = requests.get(
+                    config['COMMONS_API_URI'],
+                    params={
+                        'action': 'query',
+                        'format': 'json',
+                        'pageids': question.page_id,
+                    }
+                ).json()
+
+                entity = (requests.get(
+                    config['COMMONS_API_URI'],
+                    params={
+                        'action': 'wbgetclaims',
+                        'format': 'json',
+                        'claim': question.claim_id,
+                    }
+                ).json()['claims']['P180'][0])
+
+                claim_value = entity['mainsnak']['datavalue']['value']['id']
+                qualifier_value = entity['qualifiers'][question.type][0]['datavalue']['value']
+
+                claim = requests.get(
+                    config['WIKIDATA_API_URI'],
+                    params={
+                        'action': 'wbgetentities',
+                        'format': 'json',
+                        'ids': claim_value,
+                        'languages': 'en'
+                    }
+                ).json()['entities'][claim_value]
+                try:
+                    claim_label = claim['labels']['en']['value']
+                except KeyError:
+                    claim_label = ''
+                try:
+                    claim_description = claim['descriptions']['en']['value']
+                except KeyError:
+                    claim_description = ''
+
+                page_id = question.page_id
+
+                return_question = {
+                    'question_id': question.id,
+                    'type': question.type,
+                    'media_page': api_info_url(str(page_id)),
+                    'media_page_id': page_id,
+                    'media_title': page['query']['pages'][str(page_id)]['title'],
+                    'depict_id': claim_value,
+                    'qualifier': qualivier_value,
+                    'depict_label': claim_label,
+                    'depict_description': claim_description,
+                    'claim_id': question.claim_id,
+                    'csrf': gen_csrf(question.id)
+                }
+                return return_question
 
     if filter_type == 'recent':
         latest_files, continue_key = api_all_images(continue_key)
@@ -328,38 +424,12 @@ def get_questions(question_type, filter_type, filter_value, continue_key=None):
 
                 if type(statements) is dict:
                     for depict in statements['P180']:
-                        existing_claim = (
-                            db_get_existing_entry(Question,
-                                                  type='P180',
-                                                  claim_id=depict['id']))
-                        if existing_claim is None:
-                            new_question = Question(page_id=entity['pageid'],
-                                                    type='P180',
-                                                    claim_id=depict['id'])
-                            db.session.add(new_question)
-                            db.session.commit()
-                            db.session.add(FilteredRef(
-                                question_id=new_question.id,
-                                filter_type=filter_type,
-                                filter_value=filter_value
-                            ))
-                            db.session.commit()
-                        existing_rank_claim = (
-                            db_get_existing_entry(Question,
-                                                  type='rank',
-                                                  claim_id=depict['id']))
-                        if existing_rank_claim is None:
-                            new_question = Question(page_id=entity['pageid'],
-                                                    type='rank',
-                                                    claim_id=depict['id'])
-                            db.session.add(new_question)
-                            db.session.commit()
-                            db.session.add(FilteredRef(
-                                question_id=new_question.id,
-                                filter_type=filter_type,
-                                filter_value=filter_value
-                            ))
-                            db.session.commit()
+                        add_question_if_not_exist('P180', entity['pageid'], depict['id'], filter_type, filter_value)
+                        add_question_if_not_exist('rank', entity['pageid'], depict['id'], filter_type, filter_value)
+                        if 'qualifiers' in depict:
+                            for qualifier in qualifiers:
+                                if qualifier in depict['qualifiers']:
+                                    add_question_if_not_exist(qualifier, entity['pageid'], depict['id'], filter_type, filter_value)
             except KeyError:
                 continue
 
