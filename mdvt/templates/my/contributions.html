@@ -69,10 +69,30 @@
                     {% endif %}
 
                     {% if contrib['type'] == 'P180' %}
-                    <a class="claim-link" href="" target="_blank"><span class="claim-id">{{ contrib['claim_id'] }}</span></a> is in the above image: {{ contrib['answer'] | title }}<br>
+                    <a class="claim-link" href="" target="_blank">
+                        {% if contrib['contrib_type'] == 'test' %}
+                            <span class="claim-id">
+                            {{ contrib['claim_id'] }}
+                            </span>
+                        {% else %}
+                            <span class="depict-value">
+                            {{ contrib['depict_value'] }}
+                            </span>
+                        {% endif %}
+                    </a> is in the above image: {{ contrib['answer'] | title }}<br>
                     {% endif %}
                     {% if contrib['type'] == 'rank' %}
-                    <a class="claim-link" href="" target="_blank"><span class="claim-id">{{ contrib['claim_id'] }}</span></a> is dominant in the above image: {{ contrib['answer'] | title }}<br>
+                    <a class="claim-link" href="" target="_blank">
+                        {% if contrib['contrib_type'] == 'test' %}
+                            <span class="claim-id">
+                            {{ contrib['claim_id'] }}
+                            </span>
+                        {% else %}
+                            <span class="depict-value">
+                            {{ contrib['depict_value'] }}
+                            </span>
+                        {% endif %}
+                    </a> is dominant in the above image: {{ contrib['answer'] | title }}<br>
                     {% endif %}
 
                     <span class="text-muted">{{ contrib['time_created'] }}</span>
