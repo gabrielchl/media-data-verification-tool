@@ -80,6 +80,7 @@ def api_all_images(continue_key=None):
     params = {
         'action': 'query',
         'format': 'json',
+        'utf8': 1,
         'list': 'allimages',
         'aisort': 'timestamp',
         'aidir': 'descending',
@@ -102,6 +103,7 @@ def api_category_members(category_name, continue_key=None):
     params = {
         'action': 'query',
         'format': 'json',
+        'utf8': 1,
         'prop': 'info',
         'generator': 'categorymembers',
         'inprop': 'url',
@@ -125,6 +127,7 @@ def api_tagged_changes(tag, continue_key=None):
     params = {
         'action': 'query',
         'format': 'json',
+        'utf8': 1,
         'list': 'recentchanges',
         'rctag': tag,
         'rcprop': 'title|timestamp|ids',
@@ -229,171 +232,72 @@ def get_questions(question_type, filter_type, filter_value, continue_key=None):
                       .filter(Contribution.user_id == session['user_id'])
                       .count())
         if not true_count and not false_count and not skip_count:
-            if question.type == 'P180':
-                page = requests.get(
-                    config['COMMONS_API_URI'],
-                    params={
-                        'action': 'query',
-                        'format': 'json',
-                        'pageids': question.page_id,
-                    }
-                ).json()
-
-                claim_value = (requests.get(
-                    config['COMMONS_API_URI'],
-                    params={
-                        'action': 'wbgetclaims',
-                        'format': 'json',
-                        'claim': question.claim_id,
-                    }
-                ).json()['claims']['P180'][0]['mainsnak']
-                        ['datavalue']['value']['id'])
-
-                claim = requests.get(
-                    config['WIKIDATA_API_URI'],
-                    params={
-                        'action': 'wbgetentities',
-                        'format': 'json',
-                        'ids': claim_value,
-                        'languages': 'en'
-                    }
-                ).json()['entities'][claim_value]
-                try:
-                    claim_label = claim['labels']['en']['value']
-                except KeyError:
-                    claim_label = ''
-                try:
-                    claim_description = claim['descriptions']['en']['value']
-                except KeyError:
-                    claim_description = ''
-
-                page_id = question.page_id
-
-                return_question = {
-                    'question_id': question.id,
-                    'type': 'P180',
-                    'media_page': api_info_url(str(page_id)),
-                    'media_page_id': page_id,
-                    'media_title': page['query']['pages'][str(page_id)]['title'],
-                    'depict_id': claim_value,
-                    'depict_label': claim_label,
-                    'depict_description': claim_description,
-                    'claim_id': question.claim_id,
-                    'csrf': gen_csrf(question.id)
+            page = requests.get(
+                config['COMMONS_API_URI'],
+                params={
+                    'action': 'query',
+                    'format': 'json',
+                    'pageids': question.page_id,
                 }
-                return return_question
-            elif question.type == 'rank':
-                page = requests.get(
-                    config['COMMONS_API_URI'],
-                    params={
-                        'action': 'query',
-                        'format': 'json',
-                        'pageids': question.page_id,
-                    }
-                ).json()
+            ).json()
 
-                entity = (requests.get(
-                    config['COMMONS_API_URI'],
-                    params={
-                        'action': 'wbgetclaims',
-                        'format': 'json',
-                        'claim': question.claim_id,
-                    }
-                ).json()['claims']['P180'][0])
-
-                claim_value = entity['mainsnak']['datavalue']['value']['id']
-                rank = entity['rank']
-
-                claim = requests.get(
-                    config['WIKIDATA_API_URI'],
-                    params={
-                        'action': 'wbgetentities',
-                        'format': 'json',
-                        'ids': claim_value,
-                        'languages': 'en'
-                    }
-                ).json()['entities'][claim_value]
-                try:
-                    claim_label = claim['labels']['en']['value']
-                except KeyError:
-                    claim_label = ''
-                try:
-                    claim_description = claim['descriptions']['en']['value']
-                except KeyError:
-                    claim_description = ''
-
-                page_id = question.page_id
-
-                return_question = {
-                    'question_id': question.id,
-                    'type': 'rank',
-                    'media_page': api_info_url(str(page_id)),
-                    'media_page_id': page_id,
-                    'media_title': page['query']['pages'][str(page_id)]['title'],
-                    'depict_id': claim_value,
-                    'rank': rank,
-                    'depict_label': claim_label,
-                    'depict_description': claim_description,
-                    'claim_id': question.claim_id,
-                    'csrf': gen_csrf(question.id)
+            entity = (requests.get(
+                config['COMMONS_API_URI'],
+                params={
+                    'action': 'wbgetclaims',
+                    'format': 'json',
+                    'claim': question.claim_id,
                 }
-                return return_question
+            ).json()['claims']['P180'][0])
+
+            claim_value = entity['mainsnak']['datavalue']['value']['id']
+            question.depict_value = claim_value
+            rank = entity['rank']
+
+            if question.type != 'P180' and question.type != 'rank':
+                qualifier_value = (entity['qualifiers'][question.type]
+                                   [0]['datavalue']['value'])
+                question.qualifier_value = qualifier_value
             else:
-                page = requests.get(
-                    config['COMMONS_API_URI'],
-                    params={
-                        'action': 'query',
-                        'format': 'json',
-                        'pageids': question.page_id,
-                    }
-                ).json()
+                qualifier_value = None
 
-                entity = (requests.get(
-                    config['COMMONS_API_URI'],
-                    params={
-                        'action': 'wbgetclaims',
-                        'format': 'json',
-                        'claim': question.claim_id,
-                    }
-                ).json()['claims']['P180'][0])
+            db.session.commit()
 
-                claim_value = entity['mainsnak']['datavalue']['value']['id']
-                qualifier_value = entity['qualifiers'][question.type][0]['datavalue']['value']
-
-                claim = requests.get(
-                    config['WIKIDATA_API_URI'],
-                    params={
-                        'action': 'wbgetentities',
-                        'format': 'json',
-                        'ids': claim_value,
-                        'languages': 'en'
-                    }
-                ).json()['entities'][claim_value]
-                try:
-                    claim_label = claim['labels']['en']['value']
-                except KeyError:
-                    claim_label = ''
-                try:
-                    claim_description = claim['descriptions']['en']['value']
-                except KeyError:
-                    claim_description = ''
-
-                page_id = question.page_id
-
-                return_question = {
-                    'question_id': question.id,
-                    'type': question.type,
-                    'media_page': api_info_url(str(page_id)),
-                    'media_page_id': page_id,
-                    'media_title': page['query']['pages'][str(page_id)]['title'],
-                    'depict_id': claim_value,
-                    'qualifier': qualifier_value,
-                    'depict_label': claim_label,
-                    'depict_description': claim_description,
-                    'claim_id': question.claim_id,
-                    'csrf': gen_csrf(question.id)
+            claim = requests.get(
+                config['WIKIDATA_API_URI'],
+                params={
+                    'action': 'wbgetentities',
+                    'format': 'json',
+                    'ids': claim_value,
+                    'languages': 'en'
                 }
-                return return_question
+            ).json()['entities'][claim_value]
+            try:
+                claim_label = claim['labels']['en']['value']
+            except KeyError:
+                claim_label = ''
+            try:
+                claim_description = claim['descriptions']['en']['value']
+            except KeyError:
+                claim_description = ''
+
+            page_id = question.page_id
+
+            return_question = {
+                'question_id': question.id,
+                'type': 'P180',
+                'media_page': api_info_url(str(page_id)),
+                'media_page_id': page_id,
+                'media_title': page['query']['pages'][str(page_id)]['title'],
+                'depict_id': claim_value,
+                'rank': rank,
+                'qualifier': qualifier_value,
+                'depict_label': claim_label,
+                'depict_description': claim_description,
+                'claim_id': question.claim_id,
+                'csrf': gen_csrf(question.id)
+            }
+            return return_question
 
     if filter_type == 'recent':
         latest_files, continue_key = api_all_images(continue_key)
@@ -438,6 +342,7 @@ def get_questions(question_type, filter_type, filter_value, continue_key=None):
 
 def get_test_questions():
     test_questions = TestQuestion.query.all()
+    test_question = None
 
     for question in test_questions:
         answered = (TestContribution.query

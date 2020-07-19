@@ -45,7 +45,8 @@ def contribute():
 def api_get_media():
     if (not get_contrib_count(session['user_id'])
             and (get_test_contrib_score(session['user_id']) < 0.8
-                 or get_test_contrib_count(session['user_id']) < 5)):
+                 or get_test_contrib_count(session['user_id']) < 5)
+            and TestQuestion.query.count()):
         return jsonify({
             'status': 'success',
             'data': get_test_questions()
