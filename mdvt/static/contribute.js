@@ -59,7 +59,6 @@ function get_media() {
                     break;
                 case 'rank':
                     statement = 'Is [DEPICT] porminent in the above [MEDIA]?';
-                    $('#statement').html('<a href="https://www.wikidata.org/wiki/' + response.depict_id + '" target="_blank" data-toggle="popover">' + response.depict_label + '</a> is prominent in the above <a href="' + response.media_page + '" target="_blank">image</a>');
                     break;
                 case 'P2677':
                     statement = 'Is [DEPICT] in the frame in the above [MEDIA]?';
