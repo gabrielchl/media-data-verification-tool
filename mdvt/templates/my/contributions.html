@@ -56,55 +56,15 @@
         </div>
     </div>
 
-    <div class="row">
-        {% for contrib in contributions %}
-        <div class="col-md-3 my-3">
-            <div class="card contribution-card{{ ' test-question' if contrib['contrib_type'] == 'test' }}">
-                <a class="img-link" href="" target="_blank">
-                    <img class="card-img-top" src="{{ contrib['page_id'] }}">
-                </a>
-                <div class="card-body">
-                    {% if contrib['contrib_type'] == 'test' %}
-                    <span class="badge badge-secondary">Test Question</span><br>
-                    {% endif %}
-
-                    {% if contrib['type'] == 'P180' %}
-                    <a class="claim-link" href="" target="_blank">
-                        {% if contrib['contrib_type'] == 'test' %}
-                            <span class="claim-id">
-                            {{ contrib['claim_id'] }}
-                            </span>
-                        {% else %}
-                            <span class="depict-value">
-                            {{ contrib['depict_value'] }}
-                            </span>
-                        {% endif %}
-                    </a> is in the above image: {{ contrib['answer'] | title }}<br>
-                    {% endif %}
-                    {% if contrib['type'] == 'rank' %}
-                    <a class="claim-link" href="" target="_blank">
-                        {% if contrib['contrib_type'] == 'test' %}
-                            <span class="claim-id">
-                            {{ contrib['claim_id'] }}
-                            </span>
-                        {% else %}
-                            <span class="depict-value">
-                            {{ contrib['depict_value'] }}
-                            </span>
-                        {% endif %}
-                    </a> is dominant in the above image: {{ contrib['answer'] | title }}<br>
-                    {% endif %}
-
-                    <span class="text-muted">{{ contrib['time_created'] }}</span>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    </div>
+    <div class="row" id="contribs-container"></div>
 </div>
 
 {% endblock content %}
 {% block scripts %}
+
+<script>
+    var contribs = {{ contributions|tojson }};
+</script>
 
 <script src="{{ url_for('static', filename='my-contributions.js') }}"></script>
 
