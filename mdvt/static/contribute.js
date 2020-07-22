@@ -55,63 +55,63 @@ function get_media() {
 
             switch (response.type) {
                 case 'P180':
-                    statement = 'Is [DEPICT] in the above [MEDIA]?';
+                    statement = _('Is [DEPICT] in the above [MEDIA]?');
                     break;
                 case 'rank':
-                    statement = 'Is [DEPICT] porminent in the above [MEDIA]?';
+                    statement = _('Is [DEPICT] porminent in the above [MEDIA]?');
                     break;
                 case 'P2677':
-                    statement = 'Is [DEPICT] in the frame in the above [MEDIA]?';
+                    statement = _('Is [DEPICT] in the frame in the above [MEDIA]?');
                     break;
                 case 'P1354':
-                    statement = 'Is [DEPICT] in the above [MEDIA] shown with [QUALIFIER] (on it)?';
+                    statement = _('Is [DEPICT] in the above [MEDIA] shown with [QUALIFIER] (on it)?');
                     break;
                 case 'P462':
-                    statement = 'Is [DEPICT] in the above [MEDIA] have the color [QUALIFIER]?';
+                    statement = _('Is [DEPICT] in the above [MEDIA] have the color [QUALIFIER]?');
                     break;
                 case 'P518':
-                    statement = 'Is [DEPICT] at the [QUALIFIER] part of the above [MEDIA]?';
+                    statement = _('Is [DEPICT] at the [QUALIFIER] part of the above [MEDIA]?');
                     break;
                 case 'P1114':
-                    statement = 'Are there [QUALIFIER] [DEPICT](s) in the above [MEDIA]?';
+                    statement = _('Are there [QUALIFIER] [DEPICT](s) in the above [MEDIA]?');
                     break;
                 case 'P4878':
-                    statement = 'Does the [DEPICT] in the above [MEDIA] symbolize [QUALIFIER]?';
+                    statement = _('Does the [DEPICT] in the above [MEDIA] symbolize [QUALIFIER]?');
                     break;
                 case 'P3828':
-                    statement = 'Is [DEPICT] in the above [MEDIA] wearing (a) [QUALIFIER]?';
+                    statement = _('Is [DEPICT] in the above [MEDIA] wearing (a) [QUALIFIER]?');
                     break;
                 case 'P710':
-                    statement = 'Is [QUALIFIER] a participant in [DEPICT] in the above [MEDIA]?';
+                    statement = _('Is [QUALIFIER] a participant in [DEPICT] in the above [MEDIA]?');
                     break;
                 case 'P1419':
-                    statement = 'Is the [DEPICT] in the above [MEDIA] in [QUALIFIER] shape?';
+                    statement = _('Is the [DEPICT] in the above [MEDIA] in [QUALIFIER] shape?');
                     break;
                 case 'P6022':
-                    statement = 'Is [DEPICT] in the above [MEDIA] having the expression, gesture or body pose [QUALIFIER]?';
+                    statement = _('Is [DEPICT] in the above [MEDIA] having the expression, gesture or body pose [QUALIFIER]?');
                     break;
                 case 'P186':
-                    statement = 'Is [QUALIFIER] used in the [DEPICT] in the above [MEDIA]?';
+                    statement = _('Is [QUALIFIER] used in the [DEPICT] in the above [MEDIA]?');
                     break;
                 case 'P1884':
-                    statement = 'Does [DEPICT] in the above [MEDIA] have [QUALIFIER]?';
+                    statement = _('Does [DEPICT] in the above [MEDIA] have [QUALIFIER]?');
                     break;
                 case 'P1552':
-                    statement = 'Is [QUALIFIER] a quality of [DEPICT] in the above [MEDIA]?';
+                    statement = _('Is [QUALIFIER] a quality of [DEPICT] in the above [MEDIA]?');
                     break;
                 case 'P1545':
-                    statement = 'Does the [DEPICT] in the above [MEDIA] have the series ordinal [QUALIFIER]?';
+                    statement = _('Does the [DEPICT] in the above [MEDIA] have the series ordinal [QUALIFIER]?');
                     break;
                 case 'P7380':
-                    statement = 'Is the [DEPICT] in the above [MEDIA] identified by [QUALIFIER]?';
+                    statement = _('Is the [DEPICT] in the above [MEDIA] identified by [QUALIFIER]?');
                     break;
                 case 'P149':
-                    statement = 'Is the [DEPICT] in the above [MEDIA] of [QUALIFIER](style)?';
+                    statement = _('Is the [DEPICT] in the above [MEDIA] of [QUALIFIER](style)?');
                     break;
             }
 
             statement = statement.replace('[DEPICT]', '<a href="https://www.wikidata.org/wiki/' + response.depict_id + '" target="_blank" data-toggle="popover">' + response.depict_label + '</a>');
-            statement = statement.replace('[MEDIA]', '<a href="' + response.media_page + '" target="_blank">image</a>');
+            statement = statement.replace('[MEDIA]', '<a href="' + response.media_page + '" target="_blank">' + _('image') + '</a>');
             $('#statement').html(statement);
 
 
@@ -171,7 +171,7 @@ function post_contribution(status) {
         $('#media-cats').html('');
         get_media();
     }).fail(function(response) {
-        show_toast('warning', 'Failed to post contribution, please try again.' + response.responseText);
+        show_toast('warning', _('Failed to post contribution, please try again.') + response.responseText);
     });
 }
 
