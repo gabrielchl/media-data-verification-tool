@@ -88,7 +88,6 @@ function get_question_text() {
         url: '../api/get-question-text'
     }).done(function(response) {
         question_text = response.data;
-
         render_contributions();
     });
 }

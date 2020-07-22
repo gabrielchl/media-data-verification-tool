@@ -56,7 +56,7 @@ function get_media() {
             var statement = question_text[response.type];
 
             statement = statement.replace('[DEPICT]', '<a href="https://www.wikidata.org/wiki/' + response.depict_id + '" target="_blank" data-toggle="popover">' + response.depict_label + '</a>');
-            statement = statement.replace('[MEDIA]', '<a href="' + response.media_page + '" target="_blank">image</a>');
+            statement = statement.replace('[MEDIA]', '<a href="' + response.media_page + '" target="_blank">' + _('image') + '</a>');
             $('#statement').html(statement);
 
 
@@ -126,7 +126,7 @@ function post_contribution(status) {
         $('#media-cats').html('');
         get_media();
     }).fail(function(response) {
-        show_toast('warning', 'Failed to post contribution, please try again.' + response.responseText);
+        show_toast('warning', _('Failed to post contribution, please try again.') + response.responseText);
     });
 }
 

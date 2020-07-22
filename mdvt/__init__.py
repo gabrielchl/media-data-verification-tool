@@ -1,5 +1,6 @@
 from flask import Flask, session
 from flask_babel import Babel
+from flask_babel_js import BabelJS
 from flask_sqlalchemy import SQLAlchemy
 
 from mdvt.config.config import config
@@ -16,6 +17,7 @@ app.config['BABEL_TRANSLATION_DIRECTORIES'] = os.getcwd() + '/translations'
 db = SQLAlchemy(app)
 
 babel = Babel(app)
+babel_js = BabelJS(app)
 from mdvt.database.util import db_get_user_setting
 
 

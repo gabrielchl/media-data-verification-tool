@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-07-22 18:57+0800\n"
+"POT-Creation-Date: 2020-07-23 07:28+0800\n"
 "PO-Revision-Date: 2020-07-22 18:57+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -18,7 +18,211 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
+#: mdvt/static/contribute.js:58 mdvt/static/my-contributions.js:35
+msgid "Is [DEPICT] in the above [MEDIA]?"
+msgstr ""
+
+#: mdvt/static/contribute.js:61 mdvt/static/my-contributions.js:38
+msgid "Is [DEPICT] porminent in the above [MEDIA]?"
+msgstr ""
+
+#: mdvt/static/contribute.js:64 mdvt/static/my-contributions.js:41
+msgid "Is [DEPICT] in the frame in the above [MEDIA]?"
+msgstr ""
+
+#: mdvt/static/contribute.js:67 mdvt/static/my-contributions.js:44
+msgid "Is [DEPICT] in the above [MEDIA] shown with [QUALIFIER] (on it)?"
+msgstr ""
+
+#: mdvt/static/contribute.js:70 mdvt/static/my-contributions.js:47
+msgid "Is [DEPICT] in the above [MEDIA] have the color [QUALIFIER]?"
+msgstr ""
+
+#: mdvt/static/contribute.js:73 mdvt/static/my-contributions.js:50
+msgid "Is [DEPICT] at the [QUALIFIER] part of the above [MEDIA]?"
+msgstr ""
+
+#: mdvt/static/contribute.js:76 mdvt/static/my-contributions.js:53
+msgid "Are there [QUALIFIER] [DEPICT](s) in the above [MEDIA]?"
+msgstr ""
+
+#: mdvt/static/contribute.js:79 mdvt/static/my-contributions.js:56
+msgid "Does the [DEPICT] in the above [MEDIA] symbolize [QUALIFIER]?"
+msgstr ""
+
+#: mdvt/static/contribute.js:82 mdvt/static/my-contributions.js:59
+msgid "Is [DEPICT] in the above [MEDIA] wearing (a) [QUALIFIER]?"
+msgstr ""
+
+#: mdvt/static/contribute.js:85 mdvt/static/my-contributions.js:62
+msgid "Is [QUALIFIER] a participant in [DEPICT] in the above [MEDIA]?"
+msgstr ""
+
+#: mdvt/static/contribute.js:88 mdvt/static/my-contributions.js:65
+msgid "Is the [DEPICT] in the above [MEDIA] in [QUALIFIER] shape?"
+msgstr ""
+
+#: mdvt/static/contribute.js:91 mdvt/static/my-contributions.js:68
+msgid ""
+"Is [DEPICT] in the above [MEDIA] having the expression, gesture or body "
+"pose [QUALIFIER]?"
+msgstr ""
+
+#: mdvt/static/contribute.js:94 mdvt/static/my-contributions.js:71
+msgid "Is [QUALIFIER] used in the [DEPICT] in the above [MEDIA]?"
+msgstr ""
+
+#: mdvt/static/contribute.js:97 mdvt/static/my-contributions.js:74
+msgid "Does [DEPICT] in the above [MEDIA] have [QUALIFIER]?"
+msgstr ""
+
+#: mdvt/static/contribute.js:100 mdvt/static/my-contributions.js:77
+msgid "Is [QUALIFIER] a quality of [DEPICT] in the above [MEDIA]?"
+msgstr ""
+
+#: mdvt/static/contribute.js:103 mdvt/static/my-contributions.js:80
+msgid ""
+"Does the [DEPICT] in the above [MEDIA] have the series ordinal "
+"[QUALIFIER]?"
+msgstr ""
+
+#: mdvt/static/contribute.js:106 mdvt/static/my-contributions.js:83
+msgid "Is the [DEPICT] in the above [MEDIA] identified by [QUALIFIER]?"
+msgstr ""
+
+#: mdvt/static/contribute.js:109 mdvt/static/my-contributions.js:86
+msgid "Is the [DEPICT] in the above [MEDIA] of [QUALIFIER](style)?"
+msgstr ""
+
+#: mdvt/static/contribute.js:114
+msgid "image"
+msgstr ""
+
+#: mdvt/static/contribute.js:174
+msgid "Failed to post contribution, please try again."
+msgstr ""
+
+#: mdvt/static/my-contributions.js:130
+msgid "Show Test Questions"
+msgstr ""
+
+#: mdvt/static/my-contributions.js:134 mdvt/templates/my/contributions.html:6
+msgid "Hide Test Questions"
+msgstr ""
+
+#: mdvt/templates/contribute/contribute.html:19
+msgid "Treu"
+msgstr ""
+
+#: mdvt/templates/contribute/contribute.html:22
+msgid "False"
+msgstr ""
+
+#: mdvt/templates/contribute/contribute.html:25
+msgid "Skip"
+msgstr ""
+
+#: mdvt/templates/contribute/contribute.html:30
+msgid "Title:"
+msgstr ""
+
+#: mdvt/templates/contribute/contribute.html:31
+msgid "Description:"
+msgstr ""
+
+#: mdvt/templates/contribute/contribute.html:32
+msgid "Categories:"
+msgstr ""
+
+#: mdvt/templates/contribute/contribute.html:43
+msgid "Success"
+msgstr ""
+
+#: mdvt/templates/contribute/contribute.html:44
+#: mdvt/templates/contribute/contribute.html:56
+msgid "just now"
+msgstr ""
+
+#: mdvt/templates/contribute/contribute.html:55
+msgid "Error"
+msgstr ""
+
 #: mdvt/templates/main/home.html:6
 msgid "Welcome to MDVT!"
 msgstr "THIS IS SOME GERMAN STRING XDDDD"
+
+#: mdvt/templates/main/home.html:7
+msgid ""
+"Media Data Verification Tool (MDVT) is a micro-contribution tool which "
+"enables volunteers to correct most of the depicts data which has been "
+"entered as structured data while uploading images on Wikimedia Commons."
+msgstr ""
+
+#: mdvt/templates/main/home.html:12
+msgid "Please choose a type of media data to work on:"
+msgstr ""
+
+#: mdvt/templates/main/home.html:18
+msgid "Random"
+msgstr ""
+
+#: mdvt/templates/main/home.html:19
+msgid "Show me any type of questions!"
+msgstr ""
+
+#: mdvt/templates/main/home.html:20 mdvt/templates/main/home.html:29
+#: mdvt/templates/main/home.html:48
+msgid "Start"
+msgstr ""
+
+#: mdvt/templates/main/home.html:27
+msgid "Depict"
+msgstr ""
+
+#: mdvt/templates/main/home.html:28
+msgid "Verify depict statements, check if a certain object is in an image."
+msgstr ""
+
+#: mdvt/templates/main/home.html:46
+msgid "Prominence"
+msgstr ""
+
+#: mdvt/templates/main/home.html:47
+msgid ""
+"Verify prominence statements, check if a certain object is prominent in "
+"an image."
+msgstr ""
+
+#: mdvt/templates/main/layout.html:13 mdvt/templates/main/layout.html:15
+#: mdvt/templates/main/layout.html:22 mdvt/templates/main/layout.html:56
+msgid "Media Data Verification Tool"
+msgstr ""
+
+#: mdvt/templates/main/layout.html:35 mdvt/templates/my/contributions.html:5
+msgid "My Contributions"
+msgstr ""
+
+#: mdvt/templates/main/layout.html:39
+msgid "Logout"
+msgstr ""
+
+#: mdvt/templates/main/layout.html:43
+msgid "Login"
+msgstr ""
+
+#: mdvt/templates/my/contributions.html:16
+msgid "Contributions"
+msgstr ""
+
+#: mdvt/templates/my/contributions.html:28
+msgid "Tests"
+msgstr ""
+
+#: mdvt/templates/my/contributions.html:40
+msgid "Test avg. score (All)"
+msgstr ""
+
+#: mdvt/templates/my/contributions.html:52
+msgid "Test avg. score (Latest 10)"
+msgstr ""
 
