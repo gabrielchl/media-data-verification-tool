@@ -28,6 +28,8 @@ class Question(db.Model):
     page_id = db.Column(db.Integer, nullable=False)
     type = db.Column(db.String(255), nullable=False)
     claim_id = db.Column(db.String(255), nullable=False)
+    depict_value = db.Column(db.String(255), nullable=True)
+    qualifier_value = db.Column(db.String(1023), nullable=True)
 
     def __repr__(self):
         return '<Question {} {} {} {}>'.format(
@@ -88,6 +90,6 @@ class TestContribution(db.Model):
                              server_default=func.now())
 
     def __repr__(self):
-        return '<TestContribution {} {} {} {} {} {} {}>'.format(
+        return '<TestContribution {} {} {} {} {}>'.format(
             self.id, self.user_id, self.question_id, self.answer,
             self.time_created)

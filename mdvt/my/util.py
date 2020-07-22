@@ -18,6 +18,8 @@ def get_contributions():
                                Question.page_id,
                                Question.type,
                                Question.claim_id,
+                               Question.depict_value,
+                               Question.qualifier_value,
                                null(),
                                literal('contrib').label('contrib_type'))
                 .filter(Contribution.user_id == session.get('user_id'))
@@ -34,6 +36,8 @@ def get_contributions():
                                     TestQuestion.type,
                                     TestQuestion.value,
                                     TestQuestion.correct_ans,
+                                    null(),
+                                    null(),
                                     literal('test').label('contrib_type'))
                      .filter(TestContribution.user_id == session.get('user_id'))
                      .join(TestQuestion, TestContribution.question_id == TestQuestion.id))

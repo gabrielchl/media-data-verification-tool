@@ -51,14 +51,70 @@ function get_media() {
             $('#img-link').attr('href', response.media_page);
             $('.contribute-card .card-img-top').attr('src', 'https://commons.wikimedia.org/wiki/Special:FilePath/' + response.media_title + '?width=500');
 
+            var statement = '';
+
             switch (response.type) {
                 case 'P180':
-                    $('#statement').html('<a href="https://www.wikidata.org/wiki/' + response.depict_id + '" target="_blank" data-toggle="popover">' + response.depict_label + '</a> can be seen in the above <a href="' + response.media_page + '" target="_blank">image</a>');
+                    statement = 'Is [DEPICT] in the above [MEDIA]?';
                     break;
                 case 'rank':
-                    $('#statement').html('<a href="https://www.wikidata.org/wiki/' + response.depict_id + '" target="_blank" data-toggle="popover">' + response.depict_label + '</a> is prominent in the above <a href="' + response.media_page + '" target="_blank">image</a>');
+                    statement = 'Is [DEPICT] porminent in the above [MEDIA]?';
+                    break;
+                case 'P2677':
+                    statement = 'Is [DEPICT] in the frame in the above [MEDIA]?';
+                    break;
+                case 'P1354':
+                    statement = 'Is [DEPICT] in the above [MEDIA] shown with [QUALIFIER] (on it)?';
+                    break;
+                case 'P462':
+                    statement = 'Is [DEPICT] in the above [MEDIA] have the color [QUALIFIER]?';
+                    break;
+                case 'P518':
+                    statement = 'Is [DEPICT] at the [QUALIFIER] part of the above [MEDIA]?';
+                    break;
+                case 'P1114':
+                    statement = 'Are there [QUALIFIER] [DEPICT](s) in the above [MEDIA]?';
+                    break;
+                case 'P4878':
+                    statement = 'Does the [DEPICT] in the above [MEDIA] symbolize [QUALIFIER]?';
+                    break;
+                case 'P3828':
+                    statement = 'Is [DEPICT] in the above [MEDIA] wearing (a) [QUALIFIER]?';
+                    break;
+                case 'P710':
+                    statement = 'Is [QUALIFIER] a participant in [DEPICT] in the above [MEDIA]?';
+                    break;
+                case 'P1419':
+                    statement = 'Is the [DEPICT] in the above [MEDIA] in [QUALIFIER] shape?';
+                    break;
+                case 'P6022':
+                    statement = 'Is [DEPICT] in the above [MEDIA] having the expression, gesture or body pose [QUALIFIER]?';
+                    break;
+                case 'P186':
+                    statement = 'Is [QUALIFIER] used in the [DEPICT] in the above [MEDIA]?';
+                    break;
+                case 'P1884':
+                    statement = 'Does [DEPICT] in the above [MEDIA] have [QUALIFIER]?';
+                    break;
+                case 'P1552':
+                    statement = 'Is [QUALIFIER] a quality of [DEPICT] in the above [MEDIA]?';
+                    break;
+                case 'P1545':
+                    statement = 'Does the [DEPICT] in the above [MEDIA] have the series ordinal [QUALIFIER]?';
+                    break;
+                case 'P7380':
+                    statement = 'Is the [DEPICT] in the above [MEDIA] identified by [QUALIFIER]?';
+                    break;
+                case 'P149':
+                    statement = 'Is the [DEPICT] in the above [MEDIA] of [QUALIFIER](style)?';
                     break;
             }
+
+            statement = statement.replace('[DEPICT]', '<a href="https://www.wikidata.org/wiki/' + response.depict_id + '" target="_blank" data-toggle="popover">' + response.depict_label + '</a>');
+            statement = statement.replace('[MEDIA]', '<a href="' + response.media_page + '" target="_blank">image</a>');
+            $('#statement').html(statement);
+
+
             $('#media-title').html(response.media_title);
             question_id = response.question_id;
             csrf = response.csrf;
