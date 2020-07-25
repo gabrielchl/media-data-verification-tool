@@ -5,9 +5,12 @@ from mdvt.contribute.util import (get_contrib_count, get_questions,
                                   get_test_contrib_count,
                                   get_test_contrib_score, get_test_questions)
 from mdvt import db
-from mdvt.database.models import Contribution, TestContribution, TestQuestion
+from mdvt.database.models import (Contribution, Question,
+                                  TestContribution, TestQuestion)
 from mdvt.database.util import db_set_or_update_user_setting
 from mdvt.main.util import is_logged_in
+
+from datetime import datetime
 
 contribute_bp = Blueprint('contribute', __name__)
 
@@ -145,3 +148,20 @@ def api_contribute():
                 'name': 'Contribution recorded.'
             }
         })
+
+
+@contribute_bp.route('/api/query')
+def api_public_query():
+    contribs = db.session.query(Contribution, Question).join(Question).all()
+    ret = []
+    for contrib in contribs:
+        ret.append({
+            'id': contrib[0].id,
+            'user_id': contrib[0].user_id,
+            'time_created': datetime.timestamp(contrib[0].time_created),
+            'type': contrib[1].type,
+            'depict_value': contrib[1].depict_value,
+            'qualifier_value': contrib[1].qualifier_value,
+            'answer': contrib[0].answer == 'true'
+        })
+    return jsonify(ret)
