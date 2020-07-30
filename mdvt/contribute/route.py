@@ -5,9 +5,12 @@ from mdvt.contribute.util import (get_contrib_count, get_questions,
                                   get_test_contrib_count,
                                   get_test_contrib_score, get_test_questions)
 from mdvt import db
-from mdvt.database.models import Contribution, TestContribution, TestQuestion
+from mdvt.database.models import (Contribution, Question,
+                                  TestContribution, TestQuestion, User)
 from mdvt.database.util import db_set_or_update_user_setting
 from mdvt.main.util import is_logged_in
+
+from datetime import datetime
 
 contribute_bp = Blueprint('contribute', __name__)
 
@@ -145,3 +148,61 @@ def api_contribute():
                 'name': 'Contribution recorded.'
             }
         })
+
+
+@contribute_bp.route('/api/query/contributions')
+def api_public_query_contrib():
+    contribs = db.session.query(Contribution, Question).join(Question)
+
+    question_filters = ['page_id', 'type', 'claim_id',
+                        'depict_value', 'qualifier_value']
+    for question_filter in question_filters:
+        filter_value = request.args.get(question_filter)
+        if filter_value:
+            contribs = contribs.filter(
+                       getattr(Question, question_filter) == filter_value)
+
+    contrib_filters = ['user_id']
+    for contrib_filter in contrib_filters:
+        filter_value = request.args.get(contrib_filter)
+        if filter_value:
+            contribs = contribs.filter(
+                       getattr(Contribution, contrib_filter) == filter_value)
+
+    contribs = contribs.all()
+    ret = []
+    for contrib in contribs:
+        ret.append({
+            'id': contrib[0].id,
+            'user_id': contrib[0].user_id,
+            'time_created': datetime.timestamp(contrib[0].time_created),
+            'page_id': contrib[1].page_id,
+            'type': contrib[1].type,
+            'depict_value': contrib[1].depict_value,
+            'qualifier_value': contrib[1].qualifier_value,
+            'answer': contrib[0].answer == 'true'
+        })
+    return jsonify(ret)
+
+
+# TODO: get contrib score in 1 query
+@contribute_bp.route('/api/query/users')
+def api_public_query_user():
+    users = User.query
+
+    filters = ['sul_id']
+    for filter in filters:
+        filter_value = request.args.get(filter)
+        if filter_value:
+            users = users.filter(
+                       getattr(User, filter) == filter_value)
+
+    users = users.all()
+    ret = []
+    for user in users:
+        ret.append({
+            'id': user.id,
+            'sul_id': user.sul_id,
+            'all_time_score': get_test_contrib_score(user.id)
+        })
+    return jsonify(ret)
