@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 
 from mdvt.config.config import config
@@ -17,3 +17,8 @@ from mdvt.my.route import my_bp
 app.register_blueprint(main_bp)
 app.register_blueprint(contribute_bp)
 app.register_blueprint(my_bp)
+
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('main/404.html'), 404

@@ -1,0 +1,12 @@
+{% extends "main/layout.html" %}
+{% block content %}
+
+<div class="container text-center d-flex align-items-center h-100">
+    <div class="text-center w-100">
+        <i class="fas fa-exclamation-circle text-secondary mb-3" style="font-size: 70px"></i>
+        <p class="h2 mb-5">404 Page Not Found :(</p>
+        <a href="{{ url_for('main.home') }}" class="btn btn-secondary">Back to home page</a>
+    </div>
+</div>
+
+{% endblock content %}
