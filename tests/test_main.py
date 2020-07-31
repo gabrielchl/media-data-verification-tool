@@ -1,9 +1,12 @@
 import unittest
 
+# from mdvt.main.util import is_logged_in
 from tests.test import MdvtTest
 
 
 class MainTest(MdvtTest):
+    # Route
+
     def test_not_found_error(self):
         response = self.app.get('/a-link-30yu40ro41t9', follow_redirects=True)
         self.assertEqual(response.status_code, 404)
@@ -35,6 +38,13 @@ class MainTest(MdvtTest):
         with self.app.session_transaction() as session:
             self.assertEqual(len(session.keys()), 0)
         self.assertEqual(response.status_code, 200)
+
+    # Util
+
+    # TODO: Fix "RuntimeError: Working outside of request context."
+
+    # def test_is_logged_in(self):
+    #     self.assertEqual(is_logged_in(), False)
 
 
 if __name__ == '__main__':
