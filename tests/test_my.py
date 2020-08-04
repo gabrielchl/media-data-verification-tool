@@ -1,12 +1,12 @@
 import unittest
 
 from mdvt import db
-from mdvt.database.models import Contribution, Question, User
+from mdvt.database.models import Contribution, Question
 # from mdvt.my.util import get_contributions
 from tests.test import MdvtTest
 
 
-class MainTest(MdvtTest):
+class MyTest(MdvtTest):
     # Route
 
     def test_contributions(self):
@@ -19,13 +19,6 @@ class MainTest(MdvtTest):
         with self.app.session_transaction() as session:
             session['user_id'] = 1
 
-        user = User(
-            sul_id=12345,
-            username='test_user'
-        )
-        db.session.add(user)
-        db.session.commit()
-
         question = Question(
             page_id=12345,
             type='P180',
@@ -36,7 +29,7 @@ class MainTest(MdvtTest):
         db.session.commit()
 
         contribution = Contribution(
-            user_id=user.id,
+            user_id=self.test_user_id,
             question_id=question.id,
             answer='true'
         )

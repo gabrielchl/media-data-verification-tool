@@ -2,6 +2,7 @@ import unittest
 
 from mdvt import app, db
 from mdvt.config.config import config
+from mdvt.database.models import User
 
 
 class MdvtTest(unittest.TestCase):
@@ -13,6 +14,15 @@ class MdvtTest(unittest.TestCase):
         self.app = app.test_client()
         db.drop_all()
         db.create_all()
+
+        user = User(
+            sul_id=12345,
+            username='test_user'
+        )
+        db.session.add(user)
+        db.session.commit()
+
+        self.test_user_id = user.id
 
     def tearDown(self):
         db.drop_all()
