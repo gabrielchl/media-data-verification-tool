@@ -88,6 +88,14 @@ def api_contribute():
             }
         }), 401
 
+    if not request.data:
+        return jsonify({
+            'status': 'fail',
+            'data': {
+                'title': 'Empty request data'
+            }
+        }), 401
+
     if 'csrf' not in request.get_json():
         return jsonify({
             'status': 'fail',
@@ -96,8 +104,8 @@ def api_contribute():
             }
         }), 401
 
-    if (request.get_json()['csrf'] != session['csrf'][1]
-            or 'csrf' not in session):
+    if ('csrf' not in session
+            or request.get_json()['csrf'] != session['csrf'][1]):
         return jsonify({
             'status': 'fail',
             'data': {

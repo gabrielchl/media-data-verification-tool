@@ -23,6 +23,7 @@ class MdvtTest(unittest.TestCase):
         db.session.commit()
 
         self.test_user_id = user.id
+        self.test_username = user.username
 
     def tearDown(self):
         db.drop_all()
