@@ -39,6 +39,10 @@ def get_contributions():
                                     null(),
                                     null(),
                                     literal('test').label('contrib_type'))
-                     .filter(TestContribution.user_id == session.get('user_id'))
-                     .join(TestQuestion, TestContribution.question_id == TestQuestion.id))
-    return (contribs.union(test_contribs).order_by(Contribution.time_created.desc()).all())
+                     .filter(TestContribution.user_id
+                             == session.get('user_id'))
+                     .join(TestQuestion,
+                           TestContribution.question_id == TestQuestion.id))
+    return (contribs.union(test_contribs)
+                    .order_by(Contribution.time_created.desc())
+                    .all())

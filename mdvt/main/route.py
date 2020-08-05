@@ -2,11 +2,17 @@ from flask import (Blueprint, redirect, render_template, request, session,
                    url_for)
 import mwoauth
 
+from mdvt import app
 from mdvt.config.config import config
 from mdvt.database.models import User
 from mdvt.database.util import db_insert_if_not_exist, db_get_user_setting
 
 main_bp = Blueprint('main', __name__)
+
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('main/404.html'), 404
 
 
 @main_bp.route('/')
