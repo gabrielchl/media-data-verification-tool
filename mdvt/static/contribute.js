@@ -53,68 +53,7 @@ function get_media() {
             $('#img-link').attr('href', response.media_page);
             $('.contribute-card .card-img-top').attr('src', 'https://commons.wikimedia.org/wiki/Special:FilePath/' + response.media_title + '?width=500');
 
-<<<<<<< HEAD
             var statement = question_text[response.type];
-=======
-            var statement = '';
-
-            switch (response.type) {
-                case 'P180':
-                    statement = _('Is [DEPICT] in the above [MEDIA]?');
-                    break;
-                case 'rank':
-                    statement = _('Is [DEPICT] porminent in the above [MEDIA]?');
-                    break;
-                case 'P2677':
-                    statement = _('Is [DEPICT] in the frame in the above [MEDIA]?');
-                    break;
-                case 'P1354':
-                    statement = _('Is [DEPICT] in the above [MEDIA] shown with [QUALIFIER] (on it)?');
-                    break;
-                case 'P462':
-                    statement = _('Is [DEPICT] in the above [MEDIA] have the color [QUALIFIER]?');
-                    break;
-                case 'P518':
-                    statement = _('Is [DEPICT] at the [QUALIFIER] part of the above [MEDIA]?');
-                    break;
-                case 'P1114':
-                    statement = _('Are there [QUALIFIER] [DEPICT](s) in the above [MEDIA]?');
-                    break;
-                case 'P4878':
-                    statement = _('Does the [DEPICT] in the above [MEDIA] symbolize [QUALIFIER]?');
-                    break;
-                case 'P3828':
-                    statement = _('Is [DEPICT] in the above [MEDIA] wearing (a) [QUALIFIER]?');
-                    break;
-                case 'P710':
-                    statement = _('Is [QUALIFIER] a participant in [DEPICT] in the above [MEDIA]?');
-                    break;
-                case 'P1419':
-                    statement = _('Is the [DEPICT] in the above [MEDIA] in [QUALIFIER] shape?');
-                    break;
-                case 'P6022':
-                    statement = _('Is [DEPICT] in the above [MEDIA] having the expression, gesture or body pose [QUALIFIER]?');
-                    break;
-                case 'P186':
-                    statement = _('Is [QUALIFIER] used in the [DEPICT] in the above [MEDIA]?');
-                    break;
-                case 'P1884':
-                    statement = _('Does [DEPICT] in the above [MEDIA] have [QUALIFIER]?');
-                    break;
-                case 'P1552':
-                    statement = _('Is [QUALIFIER] a quality of [DEPICT] in the above [MEDIA]?');
-                    break;
-                case 'P1545':
-                    statement = _('Does the [DEPICT] in the above [MEDIA] have the series ordinal [QUALIFIER]?');
-                    break;
-                case 'P7380':
-                    statement = _('Is the [DEPICT] in the above [MEDIA] identified by [QUALIFIER]?');
-                    break;
-                case 'P149':
-                    statement = _('Is the [DEPICT] in the above [MEDIA] of [QUALIFIER](style)?');
-                    break;
-            }
->>>>>>> 988917def518259e2119f9ae02e31f3dc8e10c1a
 
             statement = statement.replace('[DEPICT]', '<a href="https://www.wikidata.org/wiki/' + response.depict_id + '" target="_blank" data-toggle="popover">' + response.depict_label + '</a>');
             statement = statement.replace('[MEDIA]', '<a href="' + response.media_page + '" target="_blank">' + _('image') + '</a>');

@@ -1,5 +1,6 @@
 from flask import (Blueprint, jsonify, render_template, redirect, request,
                    session, url_for)
+from flask_babel import gettext
 
 from mdvt.contribute.util import (get_contrib_count, get_questions,
                                   get_test_contrib_count,
@@ -47,24 +48,24 @@ def contribute():
 @contribute_bp.route('/api/get-question-text')
 def api_get_question_text():
     questions = {
-        'P180': 'Is [DEPICT] in the above [MEDIA]?',
-        'rank': 'Is [DEPICT] porminent in the above [MEDIA]?',
-        'P2677': 'Is [DEPICT] in the frame in the above [MEDIA]?',
-        'P1354': 'Is [DEPICT] in the above [MEDIA] shown with [QUALIFIER] (on it)?',
-        'P462': 'Is [DEPICT] in the above [MEDIA] have the color [QUALIFIER]?',
-        'P518': 'Is [DEPICT] at the [QUALIFIER] part of the above [MEDIA]?',
-        'P1114': 'Are there [QUALIFIER] [DEPICT](s) in the above [MEDIA]?',
-        'P4878': 'Does the [DEPICT] in the above [MEDIA] symbolize [QUALIFIER]?',
-        'P3828': 'Is [DEPICT] in the above [MEDIA] wearing (a) [QUALIFIER]?',
-        'P710': 'Is [QUALIFIER] a participant in [DEPICT] in the above [MEDIA]?',
-        'P1419': 'Is the [DEPICT] in the above [MEDIA] in [QUALIFIER] shape?',
-        'P6022': 'Is [DEPICT] in the above [MEDIA] having the expression, gesture or body pose [QUALIFIER]?',
-        'P186': 'Is [QUALIFIER] used in the [DEPICT] in the above [MEDIA]?',
-        'P1884': 'Does [DEPICT] in the above [MEDIA] have [QUALIFIER]?',
-        'P1552': 'Is [QUALIFIER] a quality of [DEPICT] in the above [MEDIA]?',
-        'P1545': 'Does the [DEPICT] in the above [MEDIA] have the series ordinal [QUALIFIER]?',
-        'P7380': 'Is the [DEPICT] in the above [MEDIA] identified by [QUALIFIER]?',
-        'P149': 'Is the [DEPICT] in the above [MEDIA] of [QUALIFIER](style)?'
+        'P180': gettext('Is [DEPICT] in the above [MEDIA]?'),
+        'rank': gettext('Is [DEPICT] porminent in the above [MEDIA]?'),
+        'P2677': gettext('Is [DEPICT] in the frame in the above [MEDIA]?'),
+        'P1354': gettext('Is [DEPICT] in the above [MEDIA] shown with [QUALIFIER] (on it)?'),
+        'P462': gettext('Is [DEPICT] in the above [MEDIA] have the color [QUALIFIER]?'),
+        'P518': gettext('Is [DEPICT] at the [QUALIFIER] part of the above [MEDIA]?'),
+        'P1114': gettext('Are there [QUALIFIER] [DEPICT](s) in the above [MEDIA]?'),
+        'P4878': gettext('Does the [DEPICT] in the above [MEDIA] symbolize [QUALIFIER]?'),
+        'P3828': gettext('Is [DEPICT] in the above [MEDIA] wearing (a) [QUALIFIER]?'),
+        'P710': gettext('Is [QUALIFIER] a participant in [DEPICT] in the above [MEDIA]?'),
+        'P1419': gettext('Is the [DEPICT] in the above [MEDIA] in [QUALIFIER] shape?'),
+        'P6022': gettext('Is [DEPICT] in the above [MEDIA] having the expression, gesture or body pose [QUALIFIER]?'),
+        'P186': gettext('Is [QUALIFIER] used in the [DEPICT] in the above [MEDIA]?'),
+        'P1884': gettext('Does [DEPICT] in the above [MEDIA] have [QUALIFIER]?'),
+        'P1552': gettext('Is [QUALIFIER] a quality of [DEPICT] in the above [MEDIA]?'),
+        'P1545': gettext('Does the [DEPICT] in the above [MEDIA] have the series ordinal [QUALIFIER]?'),
+        'P7380': gettext('Is the [DEPICT] in the above [MEDIA] identified by [QUALIFIER]?'),
+        'P149': gettext('Is the [DEPICT] in the above [MEDIA] of [QUALIFIER](style)?')
     }
 
     return jsonify({

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-07-23 07:28+0800\n"
+"POT-Creation-Date: 2020-08-06 22:43+0800\n"
 "PO-Revision-Date: 2020-07-22 18:57+0800\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -18,96 +18,88 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.8.0\n"
 
-#: mdvt/static/contribute.js:58 mdvt/static/my-contributions.js:35
+#: mdvt/contribute/route.py:51
 msgid "Is [DEPICT] in the above [MEDIA]?"
 msgstr ""
 
-#: mdvt/static/contribute.js:61 mdvt/static/my-contributions.js:38
+#: mdvt/contribute/route.py:52
 msgid "Is [DEPICT] porminent in the above [MEDIA]?"
 msgstr ""
 
-#: mdvt/static/contribute.js:64 mdvt/static/my-contributions.js:41
+#: mdvt/contribute/route.py:53
 msgid "Is [DEPICT] in the frame in the above [MEDIA]?"
 msgstr ""
 
-#: mdvt/static/contribute.js:67 mdvt/static/my-contributions.js:44
+#: mdvt/contribute/route.py:54
 msgid "Is [DEPICT] in the above [MEDIA] shown with [QUALIFIER] (on it)?"
 msgstr ""
 
-#: mdvt/static/contribute.js:70 mdvt/static/my-contributions.js:47
+#: mdvt/contribute/route.py:55
 msgid "Is [DEPICT] in the above [MEDIA] have the color [QUALIFIER]?"
 msgstr ""
 
-#: mdvt/static/contribute.js:73 mdvt/static/my-contributions.js:50
+#: mdvt/contribute/route.py:56
 msgid "Is [DEPICT] at the [QUALIFIER] part of the above [MEDIA]?"
 msgstr ""
 
-#: mdvt/static/contribute.js:76 mdvt/static/my-contributions.js:53
+#: mdvt/contribute/route.py:57
 msgid "Are there [QUALIFIER] [DEPICT](s) in the above [MEDIA]?"
 msgstr ""
 
-#: mdvt/static/contribute.js:79 mdvt/static/my-contributions.js:56
+#: mdvt/contribute/route.py:58
 msgid "Does the [DEPICT] in the above [MEDIA] symbolize [QUALIFIER]?"
 msgstr ""
 
-#: mdvt/static/contribute.js:82 mdvt/static/my-contributions.js:59
+#: mdvt/contribute/route.py:59
 msgid "Is [DEPICT] in the above [MEDIA] wearing (a) [QUALIFIER]?"
 msgstr ""
 
-#: mdvt/static/contribute.js:85 mdvt/static/my-contributions.js:62
+#: mdvt/contribute/route.py:60
 msgid "Is [QUALIFIER] a participant in [DEPICT] in the above [MEDIA]?"
 msgstr ""
 
-#: mdvt/static/contribute.js:88 mdvt/static/my-contributions.js:65
+#: mdvt/contribute/route.py:61
 msgid "Is the [DEPICT] in the above [MEDIA] in [QUALIFIER] shape?"
 msgstr ""
 
-#: mdvt/static/contribute.js:91 mdvt/static/my-contributions.js:68
+#: mdvt/contribute/route.py:62
 msgid ""
 "Is [DEPICT] in the above [MEDIA] having the expression, gesture or body "
 "pose [QUALIFIER]?"
 msgstr ""
 
-#: mdvt/static/contribute.js:94 mdvt/static/my-contributions.js:71
+#: mdvt/contribute/route.py:63
 msgid "Is [QUALIFIER] used in the [DEPICT] in the above [MEDIA]?"
 msgstr ""
 
-#: mdvt/static/contribute.js:97 mdvt/static/my-contributions.js:74
+#: mdvt/contribute/route.py:64
 msgid "Does [DEPICT] in the above [MEDIA] have [QUALIFIER]?"
 msgstr ""
 
-#: mdvt/static/contribute.js:100 mdvt/static/my-contributions.js:77
+#: mdvt/contribute/route.py:65
 msgid "Is [QUALIFIER] a quality of [DEPICT] in the above [MEDIA]?"
 msgstr ""
 
-#: mdvt/static/contribute.js:103 mdvt/static/my-contributions.js:80
+#: mdvt/contribute/route.py:66
 msgid ""
 "Does the [DEPICT] in the above [MEDIA] have the series ordinal "
 "[QUALIFIER]?"
 msgstr ""
 
-#: mdvt/static/contribute.js:106 mdvt/static/my-contributions.js:83
+#: mdvt/contribute/route.py:67
 msgid "Is the [DEPICT] in the above [MEDIA] identified by [QUALIFIER]?"
 msgstr ""
 
-#: mdvt/static/contribute.js:109 mdvt/static/my-contributions.js:86
+#: mdvt/contribute/route.py:68
 msgid "Is the [DEPICT] in the above [MEDIA] of [QUALIFIER](style)?"
 msgstr ""
 
-#: mdvt/static/contribute.js:114
+#: mdvt/static/contribute.js:59
 msgid "image"
 msgstr ""
 
-#: mdvt/static/contribute.js:174
+#: mdvt/static/contribute.js:129
 msgid "Failed to post contribution, please try again."
-msgstr ""
-
-#: mdvt/static/my-contributions.js:130
-msgid "Show Test Questions"
-msgstr ""
-
-#: mdvt/static/my-contributions.js:134 mdvt/templates/my/contributions.html:6
-msgid "Hide Test Questions"
 msgstr ""
 
 #: mdvt/templates/contribute/contribute.html:19
@@ -210,6 +202,10 @@ msgstr ""
 msgid "Login"
 msgstr ""
 
+#: mdvt/templates/my/contributions.html:6
+msgid "Hide Test Questions"
+msgstr ""
+
 #: mdvt/templates/my/contributions.html:16
 msgid "Contributions"
 msgstr ""
@@ -225,4 +221,7 @@ msgstr ""
 #: mdvt/templates/my/contributions.html:52
 msgid "Test avg. score (Latest 10)"
 msgstr ""
+
+#~ msgid "Show Test Questions"
+#~ msgstr ""
 
