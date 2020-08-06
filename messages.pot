@@ -1,0 +1,223 @@
+# Translations template for PROJECT.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-08-06 22:43+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.8.0\n"
+
+#: mdvt/contribute/route.py:51
+msgid "Is [DEPICT] in the above [MEDIA]?"
+msgstr ""
+
+#: mdvt/contribute/route.py:52
+msgid "Is [DEPICT] porminent in the above [MEDIA]?"
+msgstr ""
+
+#: mdvt/contribute/route.py:53
+msgid "Is [DEPICT] in the frame in the above [MEDIA]?"
+msgstr ""
+
+#: mdvt/contribute/route.py:54
+msgid "Is [DEPICT] in the above [MEDIA] shown with [QUALIFIER] (on it)?"
+msgstr ""
+
+#: mdvt/contribute/route.py:55
+msgid "Is [DEPICT] in the above [MEDIA] have the color [QUALIFIER]?"
+msgstr ""
+
+#: mdvt/contribute/route.py:56
+msgid "Is [DEPICT] at the [QUALIFIER] part of the above [MEDIA]?"
+msgstr ""
+
+#: mdvt/contribute/route.py:57
+msgid "Are there [QUALIFIER] [DEPICT](s) in the above [MEDIA]?"
+msgstr ""
+
+#: mdvt/contribute/route.py:58
+msgid "Does the [DEPICT] in the above [MEDIA] symbolize [QUALIFIER]?"
+msgstr ""
+
+#: mdvt/contribute/route.py:59
+msgid "Is [DEPICT] in the above [MEDIA] wearing (a) [QUALIFIER]?"
+msgstr ""
+
+#: mdvt/contribute/route.py:60
+msgid "Is [QUALIFIER] a participant in [DEPICT] in the above [MEDIA]?"
+msgstr ""
+
+#: mdvt/contribute/route.py:61
+msgid "Is the [DEPICT] in the above [MEDIA] in [QUALIFIER] shape?"
+msgstr ""
+
+#: mdvt/contribute/route.py:62
+msgid ""
+"Is [DEPICT] in the above [MEDIA] having the expression, gesture or body "
+"pose [QUALIFIER]?"
+msgstr ""
+
+#: mdvt/contribute/route.py:63
+msgid "Is [QUALIFIER] used in the [DEPICT] in the above [MEDIA]?"
+msgstr ""
+
+#: mdvt/contribute/route.py:64
+msgid "Does [DEPICT] in the above [MEDIA] have [QUALIFIER]?"
+msgstr ""
+
+#: mdvt/contribute/route.py:65
+msgid "Is [QUALIFIER] a quality of [DEPICT] in the above [MEDIA]?"
+msgstr ""
+
+#: mdvt/contribute/route.py:66
+msgid ""
+"Does the [DEPICT] in the above [MEDIA] have the series ordinal "
+"[QUALIFIER]?"
+msgstr ""
+
+#: mdvt/contribute/route.py:67
+msgid "Is the [DEPICT] in the above [MEDIA] identified by [QUALIFIER]?"
+msgstr ""
+
+#: mdvt/contribute/route.py:68
+msgid "Is the [DEPICT] in the above [MEDIA] of [QUALIFIER](style)?"
+msgstr ""
+
+#: mdvt/static/contribute.js:59
+msgid "image"
+msgstr ""
+
+#: mdvt/static/contribute.js:129
+msgid "Failed to post contribution, please try again."
+msgstr ""
+
+#: mdvt/templates/contribute/contribute.html:19
+msgid "Treu"
+msgstr ""
+
+#: mdvt/templates/contribute/contribute.html:22
+msgid "False"
+msgstr ""
+
+#: mdvt/templates/contribute/contribute.html:25
+msgid "Skip"
+msgstr ""
+
+#: mdvt/templates/contribute/contribute.html:30
+msgid "Title:"
+msgstr ""
+
+#: mdvt/templates/contribute/contribute.html:31
+msgid "Description:"
+msgstr ""
+
+#: mdvt/templates/contribute/contribute.html:32
+msgid "Categories:"
+msgstr ""
+
+#: mdvt/templates/contribute/contribute.html:43
+msgid "Success"
+msgstr ""
+
+#: mdvt/templates/contribute/contribute.html:44
+#: mdvt/templates/contribute/contribute.html:56
+msgid "just now"
+msgstr ""
+
+#: mdvt/templates/contribute/contribute.html:55
+msgid "Error"
+msgstr ""
+
+#: mdvt/templates/main/home.html:6
+msgid "Welcome to MDVT!"
+msgstr ""
+
+#: mdvt/templates/main/home.html:7
+msgid ""
+"Media Data Verification Tool (MDVT) is a micro-contribution tool which "
+"enables volunteers to correct most of the depicts data which has been "
+"entered as structured data while uploading images on Wikimedia Commons."
+msgstr ""
+
+#: mdvt/templates/main/home.html:12
+msgid "Please choose a type of media data to work on:"
+msgstr ""
+
+#: mdvt/templates/main/home.html:18
+msgid "Random"
+msgstr ""
+
+#: mdvt/templates/main/home.html:19
+msgid "Show me any type of questions!"
+msgstr ""
+
+#: mdvt/templates/main/home.html:20 mdvt/templates/main/home.html:29
+#: mdvt/templates/main/home.html:48
+msgid "Start"
+msgstr ""
+
+#: mdvt/templates/main/home.html:27
+msgid "Depict"
+msgstr ""
+
+#: mdvt/templates/main/home.html:28
+msgid "Verify depict statements, check if a certain object is in an image."
+msgstr ""
+
+#: mdvt/templates/main/home.html:46
+msgid "Prominence"
+msgstr ""
+
+#: mdvt/templates/main/home.html:47
+msgid ""
+"Verify prominence statements, check if a certain object is prominent in "
+"an image."
+msgstr ""
+
+#: mdvt/templates/main/layout.html:13 mdvt/templates/main/layout.html:15
+#: mdvt/templates/main/layout.html:22 mdvt/templates/main/layout.html:56
+msgid "Media Data Verification Tool"
+msgstr ""
+
+#: mdvt/templates/main/layout.html:35 mdvt/templates/my/contributions.html:5
+msgid "My Contributions"
+msgstr ""
+
+#: mdvt/templates/main/layout.html:39
+msgid "Logout"
+msgstr ""
+
+#: mdvt/templates/main/layout.html:43
+msgid "Login"
+msgstr ""
+
+#: mdvt/templates/my/contributions.html:6
+msgid "Hide Test Questions"
+msgstr ""
+
+#: mdvt/templates/my/contributions.html:16
+msgid "Contributions"
+msgstr ""
+
+#: mdvt/templates/my/contributions.html:28
+msgid "Tests"
+msgstr ""
+
+#: mdvt/templates/my/contributions.html:40
+msgid "Test avg. score (All)"
+msgstr ""
+
+#: mdvt/templates/my/contributions.html:52
+msgid "Test avg. score (Latest 10)"
+msgstr ""
+

@@ -2,8 +2,8 @@
 {% block content %}
 
 <div class="container">
-    <h2 class="my-5">My Contributions</h2>
-    <button id="test-trigger" class="btn btn-secondary">Hide Test Questions</button>
+    <h2 class="my-5">{{ _('My Contributions') }}</h2>
+    <button id="test-trigger" class="btn btn-secondary">{{ _('Hide Test Questions') }}</button>
 
     <div class="row">
         <div class="col-md-3 my-3">
@@ -13,7 +13,7 @@
                         {{ stat_contributions }}
                     </h5>
                     <p class="card-text">
-                        Contributions
+                        {{ _('Contributions') }}
                     </p>
                 </div>
             </div>
@@ -25,7 +25,7 @@
                         {{ stat_tests }}
                     </h5>
                     <p class="card-text">
-                        Tests
+                        {{ _('Tests') }}
                     </p>
                 </div>
             </div>
@@ -37,7 +37,7 @@
                         {{ stat_all_score }}
                     </h5>
                     <p class="card-text">
-                        Test avg. score (All)
+                        {{ _('Test avg. score (All)') }}
                     </p>
                 </div>
             </div>
@@ -49,7 +49,7 @@
                         {{ stat_10_score }}
                     </h5>
                     <p class="card-text">
-                        Test avg. score (Latest 10)
+                        {{ _('Test avg. score (Latest 10)') }}
                     </p>
                 </div>
             </div>

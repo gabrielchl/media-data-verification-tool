@@ -3,30 +3,30 @@
 
 <div class="container mt-3">
     <div class="jumbotron">
-        <h1 class="display-4">Welcome to MDVT!</h1>
-        <p class="lead">Media Data Verification Tool (MDVT) is a micro-contribution tool which enables volunteers to correct most of the depicts data which has been entered as structured data while uploading images on Wikimedia Commons.</p>
+        <h1 class="display-4">{{ _('Welcome to MDVT!') }}</h1>
+        <p class="lead">{{ _('Media Data Verification Tool (MDVT) is a micro-contribution tool which enables volunteers to correct most of the depicts data which has been entered as structured data while uploading images on Wikimedia Commons.') }}</p>
     </div>
 </div>
 
 <div class="container">
-    <h3>Please choose a type of media data to work on:</h3>
+    <h3>{{ _('Please choose a type of media data to work on:') }}</h3>
 
     <div class="row">
         <div class="col-md-4 mt-3">
             <div class="card">
                 <div class="card-body text-white bg-primary">
-                    <h5 class="card-title">Random</h5>
-                    <p class="card-text">Show me any type of questions!</p>
-                    <a href="/contribute?filter-type=recent" type="button" class="btn btn-outline-light btn-block">Start</a>
+                    <h5 class="card-title">{{ _('Random') }}</h5>
+                    <p class="card-text">{{ _('Show me any type of questions!') }}</p>
+                    <a href="/contribute?filter-type=recent" type="button" class="btn btn-outline-light btn-block">{{ _('Start') }}</a>
                 </div>
             </div>
         </div>
         <div class="col-md-4 mt-3">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Depict</h5>
-                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum felis mauris, fermentum quis magna sollicitudin.</p>
-                    <a href="/contribute?q-type=P180&filter-type=recent" type="button" class="btn btn-outline-primary btn-block">Start</a>
+                    <h5 class="card-title">{{ _('Depict') }}</h5>
+                    <p class="card-text">{{ _('Verify depict statements, check if a certain object is in an image.') }}</p>
+                    <a href="/contribute?q-type=P180&filter-type=recent" type="button" class="btn btn-outline-primary btn-block">{{ _('Start') }}</a>
                     <!-- <div class="row no-gutters card-btn-group">
                         <div class="col">
                             <button type="button" class="btn btn-outline-primary btn-block" id="depict-start-btn">Start (from {{ default_filter_type }}{{ ' ' + default_filter_category | replace('_', ' ') | replace('Category:', '') if default_filter_type == 'category' }}{{ ' ' + default_filter_tag_name if default_filter_type == 'tag' }})</button>
@@ -43,9 +43,9 @@
         <div class="col-md-4 mt-3">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Prominence</h5>
-                    <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum felis mauris, fermentum quis magna sollicitudin.</p>
-                    <a href="/contribute?q-type=rank&filter-type=recent" type="button" class="btn btn-outline-primary btn-block">Start</a>
+                    <h5 class="card-title">{{ _('Prominence') }}</h5>
+                    <p class="card-text">{{ _('Verify prominence statements, check if a certain object is prominent in an image.') }}</p>
+                    <a href="/contribute?q-type=rank&filter-type=recent" type="button" class="btn btn-outline-primary btn-block">{{ _('Start') }}</a>
                 </div>
             </div>
         </div>

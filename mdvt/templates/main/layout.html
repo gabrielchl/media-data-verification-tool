@@ -10,16 +10,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
     {% if title %}
-    <title>{{ title }} - Media Data Verification Tool</title>
+    <title>{{ title }} - {{ _('Media Data Verification Tool') }}</title>
     {% else %}
-    <title>Media Data Verification Tool</title>
+    <title>{{ _('Media Data Verification Tool') }}</title>
     {% endif %}
 </head>
 
 <body class="d-flex flex-column h-100">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('main.home') }}">Media Data Verification Tool</a>
+            <a class="navbar-brand" href="{{ url_for('main.home') }}">{{ _('Media Data Verification Tool') }}</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -32,15 +32,15 @@
                             {{ username }}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbar_username_dropdown">
-                            <a class="dropdown-item" href="{{ url_for('my.contributions') }}">My Contributions</a>
+                            <a class="dropdown-item" href="{{ url_for('my.contributions') }}">{{ _('My Contributions') }}</a>
                         </div>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.logout') }}">Logout</a>
+                        <a class="nav-link" href="{{ url_for('main.logout') }}">{{ _('Logout') }}</a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('main.login') }}">Login</a>
+                        <a class="nav-link" href="{{ url_for('main.login') }}">{{ _('Login') }}</a>
                     </li>
                     {% endif %}
                 </ul>
@@ -53,7 +53,7 @@
 
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container">
-            <span class="text-muted">Media Data Verification Tool</span>
+            <span class="text-muted">{{ _('Media Data Verification Tool') }}</span>
         </div>
     </footer>
 
@@ -61,6 +61,7 @@
     <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://tools-static.wmflabs.org/cdnjs/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='util.js') }}"></script>
+    <script src="{{ url_for('babel_catalog') }}"></script>
 
     {% block scripts %}
     {% endblock scripts %}
