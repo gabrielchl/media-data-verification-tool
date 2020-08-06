@@ -44,6 +44,35 @@ def contribute():
                            username=session.get('username', None))
 
 
+@contribute_bp.route('/api/get-question-text')
+def api_get_question_text():
+    questions = {
+        'P180': 'Is [DEPICT] in the above [MEDIA]?',
+        'rank': 'Is [DEPICT] porminent in the above [MEDIA]?',
+        'P2677': 'Is [DEPICT] in the frame in the above [MEDIA]?',
+        'P1354': 'Is [DEPICT] in the above [MEDIA] shown with [QUALIFIER] (on it)?',
+        'P462': 'Is [DEPICT] in the above [MEDIA] have the color [QUALIFIER]?',
+        'P518': 'Is [DEPICT] at the [QUALIFIER] part of the above [MEDIA]?',
+        'P1114': 'Are there [QUALIFIER] [DEPICT](s) in the above [MEDIA]?',
+        'P4878': 'Does the [DEPICT] in the above [MEDIA] symbolize [QUALIFIER]?',
+        'P3828': 'Is [DEPICT] in the above [MEDIA] wearing (a) [QUALIFIER]?',
+        'P710': 'Is [QUALIFIER] a participant in [DEPICT] in the above [MEDIA]?',
+        'P1419': 'Is the [DEPICT] in the above [MEDIA] in [QUALIFIER] shape?',
+        'P6022': 'Is [DEPICT] in the above [MEDIA] having the expression, gesture or body pose [QUALIFIER]?',
+        'P186': 'Is [QUALIFIER] used in the [DEPICT] in the above [MEDIA]?',
+        'P1884': 'Does [DEPICT] in the above [MEDIA] have [QUALIFIER]?',
+        'P1552': 'Is [QUALIFIER] a quality of [DEPICT] in the above [MEDIA]?',
+        'P1545': 'Does the [DEPICT] in the above [MEDIA] have the series ordinal [QUALIFIER]?',
+        'P7380': 'Is the [DEPICT] in the above [MEDIA] identified by [QUALIFIER]?',
+        'P149': 'Is the [DEPICT] in the above [MEDIA] of [QUALIFIER](style)?'
+    }
+
+    return jsonify({
+        'status': 'success',
+        'data': questions
+    })
+
+
 @contribute_bp.route('/api/get-media')
 def api_get_media():
     if (not get_contrib_count(session['user_id'])
