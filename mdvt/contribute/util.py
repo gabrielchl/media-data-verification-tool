@@ -95,6 +95,8 @@ def api_all_images(continue_key=None):
         params=params
     ).json()
 
+    # there'll be no continue in response if there're no more images
+
     return (response['query']['allimages'],
             response['continue']['aicontinue'])
 
