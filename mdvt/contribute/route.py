@@ -188,7 +188,7 @@ def api_contribute():
         })
 
 
-@contribute_bp.route('/api/query/contributions')
+@contribute_bp.route('/api/contributions')
 def api_public_query_contrib():
     contribs = db.session.query(Contribution, Question).join(Question)
 
@@ -224,7 +224,7 @@ def api_public_query_contrib():
 
 
 # TODO: get contrib score in 1 query
-@contribute_bp.route('/api/query/users')
+@contribute_bp.route('/api/users')
 def api_public_query_user():
     users = User.query
 
