@@ -47,6 +47,22 @@ def contribute():
 
 @contribute_bp.route('/api/get-question-text')
 def api_get_question_text():
+    '''
+    Gets the question text with place holders ('[DEPICT]', '[MEDIA]'
+    and '[QUALIFIER]')
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    A json object with the list of question text in object.data in the format:
+    '{question_type}': '{question text}'
+    For example:
+    'P180': 'Is [DEPICT] in the above [MEDIA]?'
+    '''
+
     questions = {
         'P180': gettext('Is [DEPICT] in the above [MEDIA]?'),
         'rank': gettext('Is [DEPICT] porminent in the above [MEDIA]?'),
@@ -76,6 +92,22 @@ def api_get_question_text():
 
 @contribute_bp.route('/api/get-media')
 def api_get_media():
+    '''
+    Gets a question.
+    Note: if the user's score is under a set threadshold, a test question will
+    be shown instead
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    A json object with the question in object.data with the following keys:
+    question_id, type, media_page, media_page_id, media_title, depict_id,
+    rank, qualifier, depict_label, depict_description, claim_id, csrf
+    '''
+
     if (not get_contrib_count(session['user_id'])
             and (get_test_contrib_score(session['user_id']) < 0.8
                  or get_test_contrib_count(session['user_id']) < 5)
@@ -101,15 +133,24 @@ def api_get_media():
 
 @contribute_bp.route('/api/contribute', methods=['post'])
 def api_contribute():
-    """Handles contribution requests.
-
-    Expected request format, in json:
+    '''
+    Handles contribution requests. Expcts post data in the following format:
     {
         question_id: <question id>,
         status: <true / false / skip>
         csrf: <csrf value>
     }
-    """
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    A json object with the status in object.status of the value 'success' or
+    'fail'
+    '''
+
     if not is_logged_in():
         return jsonify({
             'status': 'fail',
@@ -190,6 +231,19 @@ def api_contribute():
 
 @contribute_bp.route('/api/contributions')
 def api_public_query_contrib():
+    '''
+    Gets a list of contributions.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    A list of objects in json with the following keys for each contribution:
+    id, user_id, time_created, page_id, type, depict_value, qualifier_value,
+    answer
+    '''
     contribs = db.session.query(Contribution, Question).join(Question)
 
     question_filters = ['page_id', 'type', 'claim_id',
@@ -226,6 +280,18 @@ def api_public_query_contrib():
 # TODO: get contrib score in 1 query
 @contribute_bp.route('/api/users')
 def api_public_query_user():
+    '''
+    Gets a list of users.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    A list of objects in json with the following keys for each contribution:
+    id, sul_id, all_time_score
+    '''
     users = User.query
 
     filters = ['sul_id']
