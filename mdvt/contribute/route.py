@@ -2,6 +2,7 @@ from flask import (Blueprint, jsonify, render_template, redirect, request,
                    session, url_for)
 from flask_babel import gettext
 
+from mdvt.config.config import config
 from mdvt.contribute.util import (get_contrib_count, get_questions,
                                   get_test_contrib_count,
                                   get_test_contrib_score, get_test_questions)
@@ -12,6 +13,8 @@ from mdvt.database.util import db_set_or_update_user_setting
 from mdvt.main.util import is_logged_in
 
 from datetime import datetime
+import requests
+from requests_oauthlib import OAuth1
 
 contribute_bp = Blueprint('contribute', __name__)
 
@@ -175,7 +178,7 @@ def api_contribute():
             }
         }), 401
 
-    if ('csrf' not in session
+    if ('csrf' not in session or not session['csrf']
             or request.get_json()['csrf'] != session['csrf'][1]):
         return jsonify({
             'status': 'fail',
@@ -217,6 +220,41 @@ def api_contribute():
             }
         })
     else:
+        if contrib_request['status'] == 'false':
+            question = (Question.query
+                        .filter(Question.id == contrib_request['question_id'])
+                        .first())
+            if question.type == 'P180':
+                auth = OAuth1(config['OAUTH_TOKEN'],
+                              config['OAUTH_SECRET'],
+                              session.get('access_token')['key'],
+                              session.get('access_token')['secret'])
+
+                token = requests.get(
+                    config['COMMONS_API_URI'],
+                    params={
+                        'action': 'query',
+                        'meta': 'tokens',
+                        'format': 'json',
+                    },
+                    auth=auth
+                )
+
+                token = token.json()['query']['tokens']['csrftoken']
+
+                params = {
+                    'action': 'wbremoveclaims',
+                    'format': 'json',
+                    'claim': question.claim_id,
+                    'token': token
+                }
+
+                # response = requests.post(
+                #     config['COMMONS_API_URI'],
+                #     data=params,
+                #     auth=auth
+                # )
+
         db.session.add(Contribution(user_id=session['user_id'],
                                     question_id=contrib_request['question_id'],
                                     answer=contrib_request['status']))

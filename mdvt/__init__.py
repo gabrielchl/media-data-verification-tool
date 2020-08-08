@@ -23,7 +23,7 @@ from mdvt.database.util import db_get_user_setting
 
 @babel.localeselector
 def get_locale():
-    locale = db_get_user_setting(session['user_id'], 'locale')
+    locale = db_get_user_setting(session.get('user_id'), 'locale')
     if locale:
         return locale
     else:
@@ -32,7 +32,7 @@ def get_locale():
 
 @babel.timezoneselector
 def get_timezone():
-    timezone = db_get_user_setting(session['user_id'], 'timezone')
+    timezone = db_get_user_setting(session.get('user_id'), 'timezone')
     if timezone:
         return timezone
     else:
