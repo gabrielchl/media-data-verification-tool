@@ -5,10 +5,11 @@ function render_contributions() {
         $.ajax({
             url: "https://www.wikidata.org/w/api.php",
             data: {
-                "action": "query",
+                "action": "wbgetentities",
                 "format": "json",
-                "prop": "pageterms",
-                "titles": contribs[i][10],
+                "prop": "labels|descriptions|aliases",
+                "ids": contribs[i][10],
+                "languages": "en",
                 "origin": "*"
             },
             count: i,
@@ -29,7 +30,7 @@ function render_contributions() {
                         var image_src = 'https://commons.wikimedia.org/wiki/Special:FilePath/' + title + '?width=300';
                         var image_url = 'https://commons.wikimedia.org/wiki/' + title;
 
-                        var depict_label = Object.values(response.query.pages)[0].terms.label[0];
+                        var depict_label = response.entities[this.contrib[10]].labels.en.value;
 
                         var statement = question_text[this.contrib[8]];
 
