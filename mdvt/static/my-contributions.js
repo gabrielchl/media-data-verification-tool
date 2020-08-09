@@ -1,6 +1,21 @@
 var question_text;
-
 var ready_contribs = [];
+var test_showing = true;
+var viewing_card = true;
+
+function setup_view_btn() {
+    $('#view-trigger').click(function() {
+        if (viewing_card) {
+            $('#view-trigger').text('Card View');
+            render_contributions_list();
+            viewing_card = false;
+        } else {
+            $('#view-trigger').text('List View');
+            render_contributions_card();
+            viewing_card = true;
+        }
+    })
+}
 
 function render_contributions_card() {
     $('#contribs-container').html('');
@@ -38,6 +53,18 @@ function render_contributions_card() {
             return a.dataset.order > b.dataset.order;
         }).appendTo('#contribs-container');
     }
+
+    $('#test-trigger').click(function() {
+        if (test_showing) {
+            $('.contribution-card.test-question').parent().hide();
+            $('#test-trigger').text('Show Test Questions');
+            test_showing = false;
+        } else {
+            $('.contribution-card.test-question').parent().show();
+            $('#test-trigger').text('Hide Test Questions');
+            test_showing = true;
+        }
+    });
 }
 
 function render_contributions_list() {
@@ -65,6 +92,8 @@ function render_contributions_list() {
             '</tr>'
         )
     }
+
+    // Handle test question trigger
 }
 
 function render_contributions() {
@@ -120,27 +149,14 @@ function render_contributions() {
                                 }
                             )
 
-                            render_contributions_list();
+                            setup_view_btn();
+                            render_contributions_card();
                         }
                     }
                 });
             }
         });
     }
-
-    var test_showing = true;
-
-    $('#test-trigger').click(function() {
-        if (test_showing) {
-            $('.contribution-card.test-question').parent().hide();
-            $('#test-trigger').text('Show Test Questions');
-            test_showing = false;
-        } else {
-            $('.contribution-card.test-question').parent().show();
-            $('#test-trigger').text('Hide Test Questions');
-            test_showing = true;
-        }
-    })
 }
 
 function get_question_text() {
