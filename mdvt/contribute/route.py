@@ -2,10 +2,10 @@ from flask import (Blueprint, jsonify, render_template, redirect, request,
                    session, url_for)
 from flask_babel import gettext
 
-from mdvt.config.config import config
 from mdvt.contribute.util import (get_contrib_count, get_questions,
                                   get_test_contrib_count,
-                                  get_test_contrib_score, get_test_questions)
+                                  get_test_contrib_score, get_test_questions,
+                                  make_edit_call)
 from mdvt import db
 from mdvt.database.models import (Contribution, Question,
                                   TestContribution, TestQuestion, User)
@@ -13,8 +13,6 @@ from mdvt.database.util import db_set_or_update_user_setting
 from mdvt.main.util import is_logged_in
 
 from datetime import datetime
-import requests
-from requests_oauthlib import OAuth1
 
 contribute_bp = Blueprint('contribute', __name__)
 
@@ -70,21 +68,36 @@ def api_get_question_text():
         'P180': gettext('Is [DEPICT] in the above [MEDIA]?'),
         'rank': gettext('Is [DEPICT] porminent in the above [MEDIA]?'),
         'P2677': gettext('Is [DEPICT] in the frame in the above [MEDIA]?'),
-        'P1354': gettext('Is [DEPICT] in the above [MEDIA] shown with [QUALIFIER] (on it)?'),
-        'P462': gettext('Is [DEPICT] in the above [MEDIA] have the color [QUALIFIER]?'),
-        'P518': gettext('Is [DEPICT] at the [QUALIFIER] part of the above [MEDIA]?'),
-        'P1114': gettext('Are there [QUALIFIER] [DEPICT](s) in the above [MEDIA]?'),
-        'P4878': gettext('Does the [DEPICT] in the above [MEDIA] symbolize [QUALIFIER]?'),
-        'P3828': gettext('Is [DEPICT] in the above [MEDIA] wearing (a) [QUALIFIER]?'),
-        'P710': gettext('Is [QUALIFIER] a participant in [DEPICT] in the above [MEDIA]?'),
-        'P1419': gettext('Is the [DEPICT] in the above [MEDIA] in [QUALIFIER] shape?'),
-        'P6022': gettext('Is [DEPICT] in the above [MEDIA] having the expression, gesture or body pose [QUALIFIER]?'),
-        'P186': gettext('Is [QUALIFIER] used in the [DEPICT] in the above [MEDIA]?'),
-        'P1884': gettext('Does [DEPICT] in the above [MEDIA] have [QUALIFIER]?'),
-        'P1552': gettext('Is [QUALIFIER] a quality of [DEPICT] in the above [MEDIA]?'),
-        'P1545': gettext('Does the [DEPICT] in the above [MEDIA] have the series ordinal [QUALIFIER]?'),
-        'P7380': gettext('Is the [DEPICT] in the above [MEDIA] identified by [QUALIFIER]?'),
-        'P149': gettext('Is the [DEPICT] in the above [MEDIA] of [QUALIFIER](style)?')
+        'P1354': gettext('Is [DEPICT] in the above [MEDIA] shown with '
+                         '[QUALIFIER] (on it)?'),
+        'P462': gettext('Is [DEPICT] in the above [MEDIA] have the color '
+                        '[QUALIFIER]?'),
+        'P518': gettext('Is [DEPICT] at the [QUALIFIER] part of the above '
+                        '[MEDIA]?'),
+        'P1114': gettext('Are there [QUALIFIER] [DEPICT](s) in the above '
+                         '[MEDIA]?'),
+        'P4878': gettext('Does the [DEPICT] in the above [MEDIA] symbolize '
+                         '[QUALIFIER]?'),
+        'P3828': gettext('Is [DEPICT] in the above [MEDIA] wearing (a) '
+                         '[QUALIFIER]?'),
+        'P710': gettext('Is [QUALIFIER] a participant in [DEPICT] in the '
+                        'above [MEDIA]?'),
+        'P1419': gettext('Is the [DEPICT] in the above [MEDIA] in [QUALIFIER] '
+                         'shape?'),
+        'P6022': gettext('Is [DEPICT] in the above [MEDIA] having the '
+                         'expression, gesture or body pose [QUALIFIER]?'),
+        'P186': gettext('Is [QUALIFIER] used in the [DEPICT] in the above '
+                        '[MEDIA]?'),
+        'P1884': gettext('Does [DEPICT] in the above [MEDIA] have '
+                         '[QUALIFIER]?'),
+        'P1552': gettext('Is [QUALIFIER] a quality of [DEPICT] in the above '
+                         '[MEDIA]?'),
+        'P1545': gettext('Does the [DEPICT] in the above [MEDIA] have the '
+                         'series ordinal [QUALIFIER]?'),
+        'P7380': gettext('Is the [DEPICT] in the above [MEDIA] identified by '
+                         '[QUALIFIER]?'),
+        'P149': gettext('Is the [DEPICT] in the above [MEDIA] of [QUALIFIER] '
+                        '(style)?')
     }
 
     return jsonify({
@@ -220,40 +233,48 @@ def api_contribute():
             }
         })
     else:
-        if contrib_request['status'] == 'false':
-            question = (Question.query
-                        .filter(Question.id == contrib_request['question_id'])
-                        .first())
-            if question.type == 'P180':
-                auth = OAuth1(config['OAUTH_TOKEN'],
-                              config['OAUTH_SECRET'],
-                              session.get('access_token')['key'],
-                              session.get('access_token')['secret'])
+        question = (Question.query
+                    .filter(Question.id == contrib_request['question_id'])
+                    .first())
+        if question.type == 'rank':
+            current_rank = question.qualifier_value
+            if ((current_rank == 'normal'
+                 and contrib_request['status'] == 'true')
+                or (current_rank == 'preferred'
+                    and contrib_request['status'] == 'false')):
 
-                token = requests.get(
-                    config['COMMONS_API_URI'],
-                    params={
-                        'action': 'query',
-                        'meta': 'tokens',
-                        'format': 'json',
-                    },
-                    auth=auth
-                )
-
-                token = token.json()['query']['tokens']['csrftoken']
-
+                if contrib_request['status'] == 'true':
+                    correct_rank = 'preferred'
+                else:
+                    correct_rank = 'normal'
+                params = {
+                    'action': 'wbsetclaim',
+                    'format': 'json',
+                    'claim': {
+                        "type": "statement",
+                        "mainsnak": {
+                            "snaktype": "value",
+                            "property": "P180",
+                            "datavalue": {
+                                "type": "wikibase-entityid",
+                                "value": {
+                                    "id": question.depict_value
+                                }
+                            }
+                        },
+                        "id": question.claim_id,
+                        "rank": correct_rank
+                    }
+                }
+                make_edit_call(params)
+        if question.type == 'P180':
+            if contrib_request['status'] == 'false':
                 params = {
                     'action': 'wbremoveclaims',
                     'format': 'json',
-                    'claim': question.claim_id,
-                    'token': token
+                    'claim': question.claim_id
                 }
-
-                # response = requests.post(
-                #     config['COMMONS_API_URI'],
-                #     data=params,
-                #     auth=auth
-                # )
+                make_edit_call(params)
 
         db.session.add(Contribution(user_id=session['user_id'],
                                     question_id=contrib_request['question_id'],
