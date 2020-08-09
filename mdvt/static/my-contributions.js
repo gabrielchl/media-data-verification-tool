@@ -54,7 +54,7 @@ function render_contributions() {
                         }
 
                         card += '            ' + statement + '<br>' +
-                                    '            <span class="text-muted">' + this.contrib.time_created + '</span>' +
+                                    '            <span class="text-muted">' + this.contrib[5] + '</span>' +
                                     '        </div>' +
                                     '    </div>' +
                                     '</div>';
