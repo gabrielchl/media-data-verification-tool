@@ -3,6 +3,8 @@ var question_text;
 var ready_contribs = [];
 
 function render_contributions_card() {
+    $('#contribs-container').html('');
+
     for (var i = 0; i < ready_contribs.length; i++) {
         var statement = question_text[ready_contribs[i].question_type];
 
@@ -35,6 +37,33 @@ function render_contributions_card() {
         $('#contribs-container > div').sort(function(a, b) {
             return a.dataset.order > b.dataset.order;
         }).appendTo('#contribs-container');
+    }
+}
+
+function render_contributions_list() {
+    $('#contribs-container').html('<table class="table"><thead><tr><th>Image</th><th>Question</th><th>Answer</th><th>Date / Time</th></tr></thead><tbody id="list_tbody"></tbody></table>');
+
+    for (var i = 0; i < ready_contribs.length; i++) {
+        var statement = question_text[ready_contribs[i].question_type];
+
+        statement = statement.replace('[DEPICT]', '<a class="claim-link" href="https://www.wikidata.org/wiki/' + ready_contribs[i].depict_value + '" target="_blank">' +
+                                                  '    <span class="claim-id">' +
+                                                  '        ' + ready_contribs[i].depict_label +
+                                                  '    </span>' +
+                                                  '</a>');
+        statement = statement.replace('[MEDIA]', '<a href="' + ready_contribs[i].file_page_url + '" target="_blank">image</a>');
+        if (ready_contribs[i].question_type == 'test') {
+            statement += '<span class="badge badge-secondary">Test Question</span><br>';
+        }
+
+        $('#list_tbody').append(
+            '<tr>' +
+            '    <td><img src="' + ready_contribs[i].image_url + '" height="50px" width="auto"/></td>' +
+            '    <td>' + statement + '</td>' +
+            '    <td>' + ready_contribs[i].answer.charAt(0).toUpperCase() + ready_contribs[i].answer.slice(1) + '</td>' +
+            '    <td>' + ready_contribs[i].time + '</td>' +
+            '</tr>'
+        )
     }
 }
 
@@ -91,7 +120,7 @@ function render_contributions() {
                                 }
                             )
 
-                            render_contributions_card();
+                            render_contributions_list();
                         }
                     }
                 });
