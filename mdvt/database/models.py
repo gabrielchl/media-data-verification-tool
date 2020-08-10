@@ -30,10 +30,12 @@ class Question(db.Model):
     claim_id = db.Column(db.String(255), nullable=False)
     depict_value = db.Column(db.String(255), nullable=True)
     qualifier_value = db.Column(db.String(1023), nullable=True)
+    hidden = db.Column(db.Boolean, nullable=False, default=False)
 
     def __repr__(self):
-        return '<Question {} {} {} {}>'.format(
-            self.id, self.page_id, self.type, self.claim_id)
+        return '<Question {} {} {} {} {} {} {}>'.format(
+            self.id, self.page_id, self.type, self.claim_id,
+            self.depict_value, self.qualifier_value, self.hidden)
 
 
 class TestQuestion(db.Model):

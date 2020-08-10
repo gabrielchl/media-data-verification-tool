@@ -220,7 +220,7 @@ def get_questions(question_type, filter_type, filter_value, continue_key=None):
                     .all())
     for question_id in question_ids:
         question = Question.query.filter_by(id=question_id.question_id).first()
-        if question_type and question.type != question_type:
+        if question_type and question.type != question_type or question.hidden:
             continue
         true_count = (Contribution.query
                       .filter(Contribution.question_id == question.id)
@@ -245,6 +245,9 @@ def get_questions(question_type, filter_type, filter_value, continue_key=None):
                 }
             ).json()
 
+            # TODO: handle case where user got the question but another user
+            # caused it to be deleted
+
             entity = (requests.get(
                 config['COMMONS_API_URI'],
                 params={
@@ -252,7 +255,14 @@ def get_questions(question_type, filter_type, filter_value, continue_key=None):
                     'format': 'json',
                     'claim': question.claim_id,
                 }
-            ).json()['claims']['P180'][0])
+            ).json()['claims'])
+
+            if 'P180' not in entity:
+                question.hidden = True
+                db.session.commit()
+                continue
+
+            entity = entity['P180'][0]
 
             claim_value = entity['mainsnak']['datavalue']['value']['id']
             question.depict_value = claim_value

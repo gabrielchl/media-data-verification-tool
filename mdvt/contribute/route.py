@@ -251,17 +251,17 @@ def api_contribute():
                     'action': 'wbsetclaim',
                     'format': 'json',
                     'claim': {
-                        "type": "statement",
                         "mainsnak": {
                             "snaktype": "value",
                             "property": "P180",
                             "datavalue": {
-                                "type": "wikibase-entityid",
                                 "value": {
+                                    "type": "wikibase-entityid",
                                     "id": question.depict_value
                                 }
                             }
                         },
+                        "type": "statement",
                         "id": question.claim_id,
                         "rank": correct_rank
                     }
