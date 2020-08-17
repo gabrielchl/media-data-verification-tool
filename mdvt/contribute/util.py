@@ -9,6 +9,7 @@ from mdvt.database.models import (Contribution, FilteredRef, Question,
                                   TestContribution, TestQuestion)
 from mdvt.database.util import db_get_existing_entry
 
+from requests_oauthlib import OAuth1
 
 qualifiers = [
     'P2677',
@@ -208,6 +209,7 @@ def add_question_if_not_exist(question_type, page_id, depict_id,
 
 
 # TODO: solve 414 or use id instead of titles
+# TODO: lower cyclomatic complexity, split into functions
 def get_questions(question_type, filter_type, filter_value, continue_key=None):
     true_count = 0
     false_count = 0
@@ -218,7 +220,7 @@ def get_questions(question_type, filter_type, filter_value, continue_key=None):
                     .all())
     for question_id in question_ids:
         question = Question.query.filter_by(id=question_id.question_id).first()
-        if question_type and question.type != question_type:
+        if question_type and question.type != question_type or question.hidden:
             continue
         true_count = (Contribution.query
                       .filter(Contribution.question_id == question.id)
@@ -243,6 +245,9 @@ def get_questions(question_type, filter_type, filter_value, continue_key=None):
                 }
             ).json()
 
+            # TODO: handle case where user got the question but another user
+            # caused it to be deleted
+
             entity = (requests.get(
                 config['COMMONS_API_URI'],
                 params={
@@ -250,7 +255,14 @@ def get_questions(question_type, filter_type, filter_value, continue_key=None):
                     'format': 'json',
                     'claim': question.claim_id,
                 }
-            ).json()['claims']['P180'][0])
+            ).json()['claims'])
+
+            if 'P180' not in entity:
+                question.hidden = True
+                db.session.commit()
+                continue
+
+            entity = entity['P180'][0]
 
             print(entity)
 
@@ -261,6 +273,9 @@ def get_questions(question_type, filter_type, filter_value, continue_key=None):
             if question.type != 'P180' and question.type != 'rank':
                 qualifier_value = (entity['qualifiers'][question.type]
                                    [0]['datavalue']['value'])
+                question.qualifier_value = qualifier_value
+            if question.type == 'rank':
+                qualifier_value = entity['rank']
                 question.qualifier_value = qualifier_value
             else:
                 qualifier_value = None
@@ -332,16 +347,25 @@ def get_questions(question_type, filter_type, filter_value, continue_key=None):
 
                 if type(statements) is dict:
                     for depict in statements['P180']:
-                        add_question_if_not_exist('P180', entity['pageid'], depict['id'], filter_type, filter_value)
-                        add_question_if_not_exist('rank', entity['pageid'], depict['id'], filter_type, filter_value)
+                        add_question_if_not_exist('P180', entity['pageid'],
+                                                  depict['id'], filter_type,
+                                                  filter_value)
+                        add_question_if_not_exist('rank', entity['pageid'],
+                                                  depict['id'], filter_type,
+                                                  filter_value)
                         if 'qualifiers' in depict:
                             for qualifier in qualifiers:
                                 if qualifier in depict['qualifiers']:
-                                    add_question_if_not_exist(qualifier, entity['pageid'], depict['id'], filter_type, filter_value)
+                                    add_question_if_not_exist(qualifier,
+                                                              entity['pageid'],
+                                                              depict['id'],
+                                                              filter_type,
+                                                              filter_value)
             except KeyError:
                 continue
 
-    return get_questions(question_type, filter_type, filter_value, continue_key)
+    return get_questions(question_type, filter_type, filter_value,
+                         continue_key)
 
 
 def get_test_questions():
@@ -443,3 +467,35 @@ def get_file_depicts(file_name):
         return (depict_id, depict_label, depict_description, claim_id)
     except KeyError:
         return None
+
+
+def make_edit_call(params):
+    auth = OAuth1(config['OAUTH_TOKEN'],
+                  config['OAUTH_SECRET'],
+                  session.get('access_token')['key'],
+                  session.get('access_token')['secret'])
+
+    token = requests.get(
+        config['COMMONS_API_URI'],
+        params={
+            'action': 'query',
+            'meta': 'tokens',
+            'format': 'json',
+        },
+        auth=auth
+    )
+
+    token = token.json()['query']['tokens']['csrftoken']
+
+    params['token'] = token
+
+    print('Edit to make:')
+    print(params)
+
+    response = requests.post(
+        config['COMMONS_API_URI'],
+        data=params,
+        auth=auth
+    )
+
+    print(response.json())

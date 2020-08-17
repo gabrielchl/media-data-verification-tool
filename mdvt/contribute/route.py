@@ -4,7 +4,8 @@ from flask_babel import gettext
 
 from mdvt.contribute.util import (get_contrib_count, get_questions,
                                   get_test_contrib_count,
-                                  get_test_contrib_score, get_test_questions)
+                                  get_test_contrib_score, get_test_questions,
+                                  make_edit_call)
 from mdvt import db
 from mdvt.database.models import (Contribution, Question,
                                   TestContribution, TestQuestion, User)
@@ -12,6 +13,7 @@ from mdvt.database.util import db_get_user_setting, db_set_or_update_user_settin
 from mdvt.main.util import is_logged_in
 
 from datetime import datetime
+import json
 
 contribute_bp = Blueprint('contribute', __name__)
 
@@ -67,21 +69,36 @@ def api_get_question_text():
         'P180': gettext('Is [DEPICT] in the above [MEDIA]?'),
         'rank': gettext('Is [DEPICT] porminent in the above [MEDIA]?'),
         'P2677': gettext('Is [DEPICT] in the frame in the above [MEDIA]?'),
-        'P1354': gettext('Is [DEPICT] in the above [MEDIA] shown with [QUALIFIER] (on it)?'),
-        'P462': gettext('Is [DEPICT] in the above [MEDIA] have the color [QUALIFIER]?'),
-        'P518': gettext('Is [DEPICT] at the [QUALIFIER] part of the above [MEDIA]?'),
-        'P1114': gettext('Are there [QUALIFIER] [DEPICT](s) in the above [MEDIA]?'),
-        'P4878': gettext('Does the [DEPICT] in the above [MEDIA] symbolize [QUALIFIER]?'),
-        'P3828': gettext('Is [DEPICT] in the above [MEDIA] wearing (a) [QUALIFIER]?'),
-        'P710': gettext('Is [QUALIFIER] a participant in [DEPICT] in the above [MEDIA]?'),
-        'P1419': gettext('Is the [DEPICT] in the above [MEDIA] in [QUALIFIER] shape?'),
-        'P6022': gettext('Is [DEPICT] in the above [MEDIA] having the expression, gesture or body pose [QUALIFIER]?'),
-        'P186': gettext('Is [QUALIFIER] used in the [DEPICT] in the above [MEDIA]?'),
-        'P1884': gettext('Does [DEPICT] in the above [MEDIA] have [QUALIFIER]?'),
-        'P1552': gettext('Is [QUALIFIER] a quality of [DEPICT] in the above [MEDIA]?'),
-        'P1545': gettext('Does the [DEPICT] in the above [MEDIA] have the series ordinal [QUALIFIER]?'),
-        'P7380': gettext('Is the [DEPICT] in the above [MEDIA] identified by [QUALIFIER]?'),
-        'P149': gettext('Is the [DEPICT] in the above [MEDIA] of [QUALIFIER](style)?')
+        'P1354': gettext('Is [DEPICT] in the above [MEDIA] shown with '
+                         '[QUALIFIER] (on it)?'),
+        'P462': gettext('Is [DEPICT] in the above [MEDIA] have the color '
+                        '[QUALIFIER]?'),
+        'P518': gettext('Is [DEPICT] at the [QUALIFIER] part of the above '
+                        '[MEDIA]?'),
+        'P1114': gettext('Are there [QUALIFIER] [DEPICT](s) in the above '
+                         '[MEDIA]?'),
+        'P4878': gettext('Does the [DEPICT] in the above [MEDIA] symbolize '
+                         '[QUALIFIER]?'),
+        'P3828': gettext('Is [DEPICT] in the above [MEDIA] wearing (a) '
+                         '[QUALIFIER]?'),
+        'P710': gettext('Is [QUALIFIER] a participant in [DEPICT] in the '
+                        'above [MEDIA]?'),
+        'P1419': gettext('Is the [DEPICT] in the above [MEDIA] in [QUALIFIER] '
+                         'shape?'),
+        'P6022': gettext('Is [DEPICT] in the above [MEDIA] having the '
+                         'expression, gesture or body pose [QUALIFIER]?'),
+        'P186': gettext('Is [QUALIFIER] used in the [DEPICT] in the above '
+                        '[MEDIA]?'),
+        'P1884': gettext('Does [DEPICT] in the above [MEDIA] have '
+                         '[QUALIFIER]?'),
+        'P1552': gettext('Is [QUALIFIER] a quality of [DEPICT] in the above '
+                         '[MEDIA]?'),
+        'P1545': gettext('Does the [DEPICT] in the above [MEDIA] have the '
+                         'series ordinal [QUALIFIER]?'),
+        'P7380': gettext('Is the [DEPICT] in the above [MEDIA] identified by '
+                         '[QUALIFIER]?'),
+        'P149': gettext('Is the [DEPICT] in the above [MEDIA] of [QUALIFIER] '
+                        '(style)?')
     }
 
     return jsonify({
@@ -177,7 +194,7 @@ def api_contribute():
             }
         }), 401
 
-    if ('csrf' not in session
+    if ('csrf' not in session or not session['csrf']
             or request.get_json()['csrf'] != session['csrf'][1]):
         return jsonify({
             'status': 'fail',
@@ -222,6 +239,49 @@ def api_contribute():
             }
         })
     else:
+        question = (Question.query
+                    .filter(Question.id == contrib_request['question_id'])
+                    .first())
+        if question.type == 'rank':
+            current_rank = question.qualifier_value
+            if ((current_rank == 'normal'
+                 and contrib_request['status'] == 'true')
+                or (current_rank == 'preferred'
+                    and contrib_request['status'] == 'false')):
+
+                if contrib_request['status'] == 'true':
+                    correct_rank = 'preferred'
+                else:
+                    correct_rank = 'normal'
+                params = {
+                    'action': 'wbsetclaim',
+                    'format': 'json',
+                    'claim': json.dumps({
+                        "mainsnak": {
+                            "snaktype": "value",
+                            "property": "P180",
+                            "datavalue": {
+                                "value": {
+                                    "id": question.depict_value
+                                },
+                                "type": "wikibase-entityid"
+                            }
+                        },
+                        "type": "statement",
+                        "id": question.claim_id,
+                        "rank": correct_rank
+                    })
+                }
+                make_edit_call(params)
+        if question.type == 'P180':
+            if contrib_request['status'] == 'false':
+                params = {
+                    'action': 'wbremoveclaims',
+                    'format': 'json',
+                    'claim': question.claim_id
+                }
+                make_edit_call(params)
+
         db_set_or_update_user_setting(
             session['user_id'],
             'contrib_since_test',
