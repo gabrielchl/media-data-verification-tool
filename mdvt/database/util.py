@@ -20,12 +20,12 @@ def db_get_existing_entry(model, **kwargs):
     return existing_entry
 
 
-def db_get_user_setting(user_id, key):
+def db_get_user_setting(user_id, key, default=None):
     entry = db_get_user_setting_entry(user_id, key)
     if entry is not None:
         return db_get_user_setting_entry(user_id, key).value
     else:
-        return None
+        return default
 
 
 def db_get_user_setting_entry(user_id, key):
