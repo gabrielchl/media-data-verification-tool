@@ -13,6 +13,7 @@ from mdvt.database.util import db_set_or_update_user_setting
 from mdvt.main.util import is_logged_in
 
 from datetime import datetime
+import json
 
 contribute_bp = Blueprint('contribute', __name__)
 
@@ -250,21 +251,21 @@ def api_contribute():
                 params = {
                     'action': 'wbsetclaim',
                     'format': 'json',
-                    'claim': {
+                    'claim': json.dumps({
                         "mainsnak": {
                             "snaktype": "value",
                             "property": "P180",
                             "datavalue": {
                                 "value": {
-                                    "type": "wikibase-entityid",
                                     "id": question.depict_value
-                                }
+                                },
+                                "type": "wikibase-entityid"
                             }
                         },
                         "type": "statement",
                         "id": question.claim_id,
                         "rank": correct_rank
-                    }
+                    })
                 }
                 make_edit_call(params)
         if question.type == 'P180':
