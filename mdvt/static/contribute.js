@@ -49,6 +49,7 @@ function get_media() {
             show_toast('warning', 'Failed to get media.');
         } else {
             response = response.data;
+            console.log(response);
             $('.contribute-card').removeClass('loading');
             $('#img-link').attr('href', response.media_page);
             $('.contribute-card .card-img-top').attr('src', 'https://commons.wikimedia.org/wiki/Special:FilePath/' + response.media_title + '?width=500');
