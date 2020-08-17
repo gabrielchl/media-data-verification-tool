@@ -264,6 +264,8 @@ def get_questions(question_type, filter_type, filter_value, continue_key=None):
 
             entity = entity['P180'][0]
 
+            print(entity)
+
             claim_value = entity['mainsnak']['datavalue']['value']['id']
             question.depict_value = claim_value
             rank = entity['rank']
@@ -415,6 +417,7 @@ def get_test_questions():
 
     return_question = {
         'question_id': 'T{}'.format(test_question.id),
+        'type': test_question.type,
         'media_page': api_info_url(str(page_id)),
         'media_page_id': page_id,
         'media_title': page['query']['pages'][str(page_id)]['title'],

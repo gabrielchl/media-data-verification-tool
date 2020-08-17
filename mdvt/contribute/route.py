@@ -9,7 +9,7 @@ from mdvt.contribute.util import (get_contrib_count, get_questions,
 from mdvt import db
 from mdvt.database.models import (Contribution, Question,
                                   TestContribution, TestQuestion, User)
-from mdvt.database.util import db_set_or_update_user_setting
+from mdvt.database.util import db_get_user_setting, db_set_or_update_user_setting
 from mdvt.main.util import is_logged_in
 
 from datetime import datetime
@@ -125,10 +125,12 @@ def api_get_media():
     rank, qualifier, depict_label, depict_description, claim_id, csrf
     '''
 
-    if (not get_contrib_count(session['user_id'])
+    if ((not get_contrib_count(session['user_id'])
             and (get_test_contrib_score(session['user_id']) < 0.8
                  or get_test_contrib_count(session['user_id']) < 5)
-            and TestQuestion.query.count()):
+            and TestQuestion.query.count())
+        or (int(db_get_user_setting(session['user_id'], 'contrib_since_test', 0))
+            >= 5)):
         return jsonify({
             'status': 'success',
             'data': get_test_questions()
@@ -223,14 +225,17 @@ def api_contribute():
                        .filter(TestQuestion.id == question_id)
                        .first()
                        .correct_ans)
-        correct = ('correct'
-                   if correct_ans == contrib_request['status']
-                   else 'wrong')
+        correct = correct_ans == contrib_request['status']
+        test_result_text = ('correct' if correct else 'wrong')
+
+        if correct:
+            db_set_or_update_user_setting(session['user_id'],
+                                          'contrib_since_test', 0)
 
         return jsonify({
             'status': 'success',
             'data': {
-                'name': 'Test result: {}'.format(correct)
+                'name': 'Test result: {}'.format(test_result_text)
             }
         })
     else:
@@ -276,6 +281,16 @@ def api_contribute():
                     'claim': question.claim_id
                 }
                 make_edit_call(params)
+
+        db_set_or_update_user_setting(
+            session['user_id'],
+            'contrib_since_test',
+            int(db_get_user_setting(
+                session['user_id'],
+                'contrib_since_test',
+                0
+            )) + 1
+        )
 
         db.session.add(Contribution(user_id=session['user_id'],
                                     question_id=contrib_request['question_id'],
