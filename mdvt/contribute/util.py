@@ -264,8 +264,6 @@ def get_questions(question_type, filter_type, filter_value, continue_key=None):
 
             entity = entity['P180'][0]
 
-            print(entity)
-
             claim_value = entity['mainsnak']['datavalue']['value']['id']
             question.depict_value = claim_value
             rank = entity['rank']
@@ -489,13 +487,10 @@ def make_edit_call(params):
 
     params['token'] = token
 
-    print('Edit to make:')
-    print(params)
-
-    response = requests.post(
+    requests.post(
         config['COMMONS_API_URI'],
         data=params,
         auth=auth
     )
 
-    print(response.json())
+    # TODO: handle api reaponse

@@ -38,7 +38,6 @@ def db_set_or_update_user_setting(user_id, key, value):
         entry.value = value
         db.session.commit()
     else:
-        print('here')
         db.session.add(UserSetting(user_id=user_id,
                                    key=key,
                                    value=value))
