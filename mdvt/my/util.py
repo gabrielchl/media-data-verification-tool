@@ -34,10 +34,10 @@ def get_contributions():
                                     TestQuestion.id,
                                     TestQuestion.page_id,
                                     TestQuestion.type,
+                                    null(),
                                     TestQuestion.value,
+                                    null(),
                                     TestQuestion.correct_ans,
-                                    null(),
-                                    null(),
                                     literal('test').label('contrib_type'))
                      .filter(TestContribution.user_id
                              == session.get('user_id'))
