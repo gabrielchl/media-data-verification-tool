@@ -208,9 +208,7 @@ def add_question_if_not_exist(question_type, page_id, depict_id,
         db.session.commit()
 
 
-# TODO: solve 414 or use id instead of titles
-# TODO: lower cyclomatic complexity, split into functions
-def get_questions(question_type, filter_type, filter_value, continue_key=None):
+def get_existing_question(question_type, filter_type, filter_value):
     true_count = 0
     false_count = 0
     skip_count = 0
@@ -316,54 +314,69 @@ def get_questions(question_type, filter_type, filter_value, continue_key=None):
             }
             return return_question
 
-    if filter_type == 'recent':
-        latest_files, continue_key = api_all_images(continue_key)
-        file_titles = {file['title'] for file in latest_files}
-    elif filter_type == 'category':
-        pages, continue_key = api_category_members(filter_value, continue_key)
-        file_titles = {page['title'] for page in pages}
-    elif filter_type == 'tag':
-        changes, continue_key = api_tagged_changes(filter_value, continue_key)
-        file_titles = {change['title'] for change in changes}
 
-    statements = requests.get(
-        config['COMMONS_API_URI'],
-        params={
-            'action': 'wbgetentities',
-            'format': 'json',
-            'sites': 'commonswiki',
-            'titles': '|'.join(file_titles)
-        }
-    ).json()
+# TODO: solve 414 or use id instead of titles
+# TODO: lower cyclomatic complexity, split into functions
+def get_questions(question_type, filter_type, filter_value, continue_key=None):
+    existing_question = get_existing_question(question_type,
+                                              filter_type, filter_value)
+    if existing_question:
+        return existing_question
+    else:
+        if filter_type == 'recent':
+            latest_files, continue_key = api_all_images(continue_key)
+            file_titles = {file['title'] for file in latest_files}
+        elif filter_type == 'category':
+            pages, continue_key = api_category_members(filter_value,
+                                                       continue_key)
+            file_titles = {page['title'] for page in pages}
+        elif filter_type == 'tag':
+            changes, continue_key = api_tagged_changes(filter_value,
+                                                       continue_key)
+            file_titles = {change['title'] for change in changes}
 
-    if 'entities' in statements:
-        entities = list(statements['entities'].values())
+        statements = requests.get(
+            config['COMMONS_API_URI'],
+            params={
+                'action': 'wbgetentities',
+                'format': 'json',
+                'sites': 'commonswiki',
+                'titles': '|'.join(file_titles)
+            }
+        ).json()
 
-        for entity in entities:
-            try:
-                statements = entity['statements']
+        if 'entities' in statements:
+            entities = list(statements['entities'].values())
 
-                if type(statements) is dict:
-                    for depict in statements['P180']:
-                        add_question_if_not_exist('P180', entity['pageid'],
-                                                  depict['id'], filter_type,
-                                                  filter_value)
-                        add_question_if_not_exist('rank', entity['pageid'],
-                                                  depict['id'], filter_type,
-                                                  filter_value)
-                        if 'qualifiers' in depict:
-                            for qualifier in qualifiers:
-                                if qualifier in depict['qualifiers']:
-                                    add_question_if_not_exist(qualifier,
-                                                              entity['pageid'],
-                                                              depict['id'],
-                                                              filter_type,
-                                                              filter_value)
-            except KeyError:
-                continue
+            for entity in entities:
+                try:
+                    statements = entity['statements']
 
-    return get_questions(question_type, filter_type, filter_value,
-                         continue_key)
+                    if type(statements) is dict:
+                        for depict in statements['P180']:
+                            add_question_if_not_exist('P180',
+                                                      entity['pageid'],
+                                                      depict['id'],
+                                                      filter_type,
+                                                      filter_value)
+                            add_question_if_not_exist('rank',
+                                                      entity['pageid'],
+                                                      depict['id'],
+                                                      filter_type,
+                                                      filter_value)
+                            if 'qualifiers' in depict:
+                                for qualifier in qualifiers:
+                                    if qualifier in depict['qualifiers']:
+                                        add_question_if_not_exist(qualifier,
+                                                                  entity['pageid'],
+                                                                  depict['id'],
+                                                                  filter_type,
+                                                                  filter_value)
+                except KeyError:
+                    continue
+
+        return get_questions(question_type, filter_type, filter_value,
+                             continue_key)
 
 
 def get_test_questions():

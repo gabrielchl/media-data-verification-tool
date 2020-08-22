@@ -9,7 +9,8 @@ from mdvt.contribute.util import (get_contrib_count, get_questions,
 from mdvt import db
 from mdvt.database.models import (Contribution, Question,
                                   TestContribution, TestQuestion, User)
-from mdvt.database.util import db_get_user_setting, db_set_or_update_user_setting
+from mdvt.database.util import (db_get_user_setting,
+                                db_set_or_update_user_setting)
 from mdvt.main.util import is_logged_in
 
 from datetime import datetime
@@ -129,7 +130,8 @@ def api_get_media():
             and (get_test_contrib_score(session['user_id']) < 0.8
                  or get_test_contrib_count(session['user_id']) < 5)
             and TestQuestion.query.count())
-        or (int(db_get_user_setting(session['user_id'], 'contrib_since_test', 0))
+        or (int(db_get_user_setting(session['user_id'],
+                'contrib_since_test', 0))
             >= 5)):
         return jsonify({
             'status': 'success',
