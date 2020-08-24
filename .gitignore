@@ -1,3 +1,5 @@
 __pycache__/
 .coverage
 config.py
+node_modules
+mdvt/static/js

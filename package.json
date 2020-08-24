@@ -1,0 +1,25 @@
+{
+  "name": "media-data-verification-tool",
+  "version": "0.9.0",
+  "description": "This is (so far) a prototype / demo for [my proposal](https://phabricator.wikimedia.org/T247576) for GSoC 2020.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack -d --progress --color --watch",
+    "build": "webpack -p --progress --color"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gabrielchl/media-data-verification-tool"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gabrielchl/media-data-verification-tool/issues"
+  },
+  "homepage": "https://github.com/gabrielchl/media-data-verification-tool#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  }
+}
