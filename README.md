@@ -20,4 +20,6 @@ config['DATABASE_URI'] = '<sqlalchemy db uri>'
 >>> from mdvt import db
 >>> db.create_all()
 ```
-4. Run the tool with `flask run`
+4. Install front end dependencies with `npm i`
+5. Build JavaScript with `npm run dev` (use `npm run build` for production)
+5. Run the tool with `flask run`

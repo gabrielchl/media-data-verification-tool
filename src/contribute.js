@@ -1,3 +1,5 @@
+import {getUrlParam} from './util';
+
 var question_text;
 
 var question_type = getUrlParam('q-type', undefined);
