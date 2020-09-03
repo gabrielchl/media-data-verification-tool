@@ -96,66 +96,78 @@ function render_contributions_list() {
     // Handle test question trigger
 }
 
+function get_item_label(page_id) {
+    return $.ajax({
+        url: "https://www.wikidata.org/w/api.php",
+        data: {
+            "action": "wbgetentities",
+            "format": "json",
+            "prop": "labels|descriptions|aliases",
+            "ids": page_id,
+            "languages": "en",
+            "origin": "*"
+        }
+    });
+}
+
+function get_media_page_info(page_id) {
+    return $.ajax({
+        url: "https://commons.wikimedia.org/w/api.php",
+        data: {
+            "action": "query",
+            "format": "json",
+            "pageids": page_id,
+            "origin": "*"
+        }
+    });
+}
+
+function temp_store(i) {
+    return i;
+}
+
 function render_contributions() {
     var ready_count = 0;
 
     for (var i = 0; i < contribs.length; i++) {
-        $.ajax({
-            url: "https://www.wikidata.org/w/api.php",
-            data: {
-                "action": "wbgetentities",
-                "format": "json",
-                "prop": "labels|descriptions|aliases",
-                "ids": contribs[i][10],
-                "languages": "en",
-                "origin": "*"
-            },
-            count: i,
-            contrib: contribs[i],
-            success: function(response) {
-                $.ajax({
-                    url: "https://commons.wikimedia.org/w/api.php",
-                    data: {
-                    	"action": "query",
-                    	"format": "json",
-                    	"pageids": this.contrib[7],
-                        "origin": "*"
-                    },
-                    count: this.count,
-                    contrib: this.contrib,
-                    success: function(query_data) {
-                        var title = query_data.query.pages[this.contrib[7]].title;
+        $.when(
+            get_item_label(contribs[i][10]),
+            get_media_page_info(contribs[i][7]),
+            temp_store(i)
+        ).done(
+            function(item_label, media_page_info, i) {
+                item_label = item_label[0];
+                media_page_info = media_page_info[0];
+                var title = media_page_info.query.pages[contribs[i][7]].title;
 
-                        ready_contribs.push({
-                            order: this.count,
-                            question_type: this.contrib[8],
-                            depict_value: this.contrib[10],
-                            depict_label: response.entities[this.contrib[10]].labels.en.value,
-                            qualifier_value: this.contrib[11],
-                            file_page_url: 'https://commons.wikimedia.org/wiki/' + title,
-                            image_url: 'https://commons.wikimedia.org/wiki/Special:FilePath/' + title + '?width=300',
-                            question_type: this.contrib[8],
-                            answer: this.contrib[3],
-                            time: this.contrib[5],
-                            test_question: this.contrib[13]
-                        });
-
-                        ready_count++;
-
-                        if (ready_count == contribs.length) {
-                            ready_contribs.sort(
-                                function(a, b) {
-                                    return a.order - b.order;
-                                }
-                            )
-
-                            setup_view_btn();
-                            render_contributions_card();
-                        }
-                    }
+                ready_contribs.push({
+                    order: i,
+                    question_type: contribs[i][8],
+                    depict_value: contribs[i][10],
+                    depict_label: item_label.entities[contribs[i][10]].labels.en.value,
+                    qualifier_value: contribs[i][11],
+                    file_page_url: 'https://commons.wikimedia.org/wiki/' + title,
+                    image_url: 'https://commons.wikimedia.org/wiki/Special:FilePath/' + title + '?width=300',
+                    question_type: contribs[i][8],
+                    answer: contribs[i][3],
+                    time: contribs[i][5],
+                    test_question: contribs[i][13]
                 });
+
+                ready_count++;
+
+                if (ready_count == contribs.length) {
+                    ready_contribs.sort(
+                        function(a, b) {
+                            return a.order - b.order;
+                        }
+                    )
+
+                    setup_view_btn();
+                    render_contributions_card();
+                }
             }
-        });
+        );
     }
 }
 
