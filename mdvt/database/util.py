@@ -15,7 +15,7 @@ def db_insert_if_not_exist(entry, **kwargs):
 def db_get_existing_entry(model, **kwargs):
     existing_entry = model.query
     for key, value in kwargs.items():
-        existing_entry = existing_entry.filter(getattr(model, key) == value)
+        existing_entry = existing_entry.filter_by(**{key: value})
     existing_entry = existing_entry.first()
     return existing_entry
 
