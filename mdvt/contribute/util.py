@@ -35,7 +35,9 @@ def get_contrib_count(user_id=None):
     contribs = Contribution.query
 
     if user_id is not None:
-        contribs = contribs.filter(Contribution.user_id == user_id)
+        contribs = (contribs
+                    .filter(Contribution.user_id == user_id)
+                    .filter(Contribution.answer != "skip"))
 
     return contribs.count()
 
@@ -255,7 +257,12 @@ def get_questions(question_type, filter_type, filter_value, continue_key=None):
                     'format': 'json',
                     'claim': question.claim_id,
                 }
-            ).json()['claims'])
+            ).json())
+
+            if 'claims' not in entity:
+                continue
+
+            entity = entity['claims']
 
             if 'P180' not in entity:
                 question.hidden = True
